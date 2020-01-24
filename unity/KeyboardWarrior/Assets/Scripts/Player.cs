@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
     // Used for checking if the player is in a state to type (so if animations are playing then keystrokes won't register
     bool canType = true;
 
+    public Text textBox;
     
 
     // Start is called before the first frame update
@@ -30,6 +32,7 @@ public class Player : MonoBehaviour
         currentWord = words[wordIndex];
         currentChar = currentWord[0].ToString();
         wordLength = currentWord.Length;
+        textBox.text = currentWord;
     }
 
     // Update is called once per frame
@@ -56,6 +59,7 @@ public class Player : MonoBehaviour
                 currentWord = words[wordIndex % words.Length];
                 currentChar = currentWord[0].ToString();
                 wordLength = currentWord.Length;
+                textBox.text = currentWord;
             }
         }
         // User fucked up
