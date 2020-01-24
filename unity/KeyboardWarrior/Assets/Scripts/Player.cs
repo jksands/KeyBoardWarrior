@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     bool canType = true;
 
     public Text textBox;
+    public Text overlay;
     
 
     // Start is called before the first frame update
@@ -33,6 +34,8 @@ public class Player : MonoBehaviour
         currentChar = currentWord[0].ToString();
         wordLength = currentWord.Length;
         textBox.text = currentWord;
+        overlay.text = "";
+        overlay.color = Color.yellow;
     }
 
     // Update is called once per frame
@@ -47,6 +50,7 @@ public class Player : MonoBehaviour
             if (currentIndex != wordLength)
             {
                 Debug.Log(currentChar);
+                overlay.text += currentChar;
                 // Get the next character
                 currentChar = currentWord[currentIndex].ToString();
             }
@@ -54,6 +58,7 @@ public class Player : MonoBehaviour
             {
                 // Get the next word and reset information
                 Debug.Log("Word completed~");
+                overlay.text = "";
                 currentIndex = 0;
                 wordIndex++;
                 currentWord = words[wordIndex % words.Length];
@@ -68,6 +73,7 @@ public class Player : MonoBehaviour
         {
             // Reset back to the beginning of the word
             Debug.Log("Word reset");
+            overlay.text = "";
             currentIndex = 0;
             currentChar = currentWord[currentIndex].ToString();
         }
