@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -21,13 +22,31 @@ public class Player : MonoBehaviour
     // Used for checking if the player is in a state to type (so if animations are playing then keystrokes won't register
     bool canType = true;
 
+    // This should hold the textboxes
+    public GameObject[] empties;
     public Text textBox;
     public Text overlay;
+
+    // For future consideration
+    // private Text[] textBoxes;
+    // private Text[] overlays;
+    // private List<GameObject> active;
     
 
     // Start is called before the first frame update
     void Start()
     {
+        textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
+        overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
+
+        // For future consideration
+        // for(int i = 0; i < empties.Length;  i++)
+        // {
+        //     textBoxes[i] = empties[i].transform.GetChild(0).gameObject.GetComponent<Text>();
+        //     overlays[i] = empties[i].transform.GetChild(1).gameObject.GetComponent<Text>();
+        //     active.Add(empties[i]);
+        // }
+
         wordIndex = 0;
         currentIndex = 0;
         currentWord = words[wordIndex];
@@ -41,8 +60,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Quit this shit
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+            // SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+        }
         // This checks if the user has typed the current char
-        if (Input.GetKeyDown(currentChar))
+        else if (Input.GetKeyDown(currentChar))
         {
             // Increment the character index
             currentIndex++;

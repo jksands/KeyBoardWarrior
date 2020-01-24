@@ -22,6 +22,6 @@ public class SceneChanger : MonoBehaviour
     void ChangeScene()
     {
         SceneManager.LoadScene(1);
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game"));
+        // SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game"));
     }
 }
