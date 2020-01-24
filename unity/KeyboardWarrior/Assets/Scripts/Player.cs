@@ -59,6 +59,7 @@ public class Player : MonoBehaviour
                 currentWord = words[wordIndex % words.Length];
                 currentChar = currentWord[0].ToString();
                 wordLength = currentWord.Length;
+                // UPdate the word to the screen
                 textBox.text = currentWord;
             }
         }
