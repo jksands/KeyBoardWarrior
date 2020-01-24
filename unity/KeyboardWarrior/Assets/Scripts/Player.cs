@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     // Used for checking if the player is in a state to type (so if animations are playing then keystrokes won't register
     bool canType = true;
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,17 +36,20 @@ public class Player : MonoBehaviour
     void Update()
     {
         // This checks if the user has typed the current char
-        // PROBLEM: How to detect if any other key was pressed?
         if (Input.GetKeyDown(currentChar))
         {
+            // Increment the character index
             currentIndex++;
+            // If we're not at the end of the word
             if (currentIndex != wordLength)
             {
                 Debug.Log(currentChar);
+                // Get the next character
                 currentChar = currentWord[currentIndex].ToString();
             }
             else
             {
+                // Get the next word and reset information
                 Debug.Log("Word completed~");
                 currentIndex = 0;
                 wordIndex++;
@@ -52,6 +57,14 @@ public class Player : MonoBehaviour
                 currentChar = currentWord[0].ToString();
                 wordLength = currentWord.Length;
             }
+        }
+        // User fucked up
+        else if (Input.anyKeyDown)
+        {
+            // Reset back to the beginning of the word
+            Debug.Log("Word reset");
+            currentIndex = 0;
+            currentChar = currentWord[currentIndex].ToString();
         }
     }
 }
