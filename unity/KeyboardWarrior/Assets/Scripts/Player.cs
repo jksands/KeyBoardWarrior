@@ -28,9 +28,11 @@ public class Player : MonoBehaviour
     public Text overlay;
 
     // For future consideration
-    // private Text[] textBoxes;
-    // private Text[] overlays;
-    // private List<GameObject> active;
+    private List<Text> textBoxes;
+    private List<Text> overlays;
+    private List<GameObject> active;
+
+    private List<string> currentWords;
     
 
     // Start is called before the first frame update
@@ -39,13 +41,22 @@ public class Player : MonoBehaviour
         textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
 
+        textBoxes = new List<Text>();
+        overlays = new List<Text>();
+        active = new List<GameObject>();
+
+        currentWords = new List<string>();
+
         // For future consideration
-        // for(int i = 0; i < empties.Length;  i++)
-        // {
-        //     textBoxes[i] = empties[i].transform.GetChild(0).gameObject.GetComponent<Text>();
-        //     overlays[i] = empties[i].transform.GetChild(1).gameObject.GetComponent<Text>();
-        //     active.Add(empties[i]);
-        // }
+       for(int i = 0; i < empties.Length;  i++)
+       {
+           empties[i].SetActive(true);
+           textBoxes.Add(empties[i].transform.GetChild(0).gameObject.GetComponent<Text>());
+           overlays.Add(empties[i].transform.GetChild(1).gameObject.GetComponent<Text>());
+           active.Add(empties[i]);
+           // list of words that are mapped to the textboxes
+            currentWords.Add(words[i]);
+       }
 
         wordIndex = 0;
         currentIndex = 0;
@@ -66,41 +77,47 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene(0);
             // SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
         }
-        // This checks if the user has typed the current char
-        else if (Input.GetKeyDown(currentChar))
+        for (int i = 0; i < active.Count; i++)
         {
-            // Increment the character index
-            currentIndex++;
-            // If we're not at the end of the word
-            if (currentIndex != wordLength)
+            // This checks if the user has typed the current char
+            if (Input.GetKeyDown(currentWords[i][currentIndex].ToString()))
             {
-                Debug.Log(currentChar);
-                overlay.text += currentChar;
-                // Get the next character
-                currentChar = currentWord[currentIndex].ToString();
+                // Increment the character index
+                currentIndex++;
+                // If we're not at the end of the word
+                if (currentIndex != words[i].Length)
+                {
+                    Debug.Log(currentChar);
+                    overlays[i].text += currentChar;
+                    // Get the next character
+                    currentChar = currentWords[i][currentIndex].ToString();
+                }
+                else
+                {
+                    // Get the next word and reset information
+                    Debug.Log("Word completed~");
+                    overlay.text = "";
+                    currentIndex = 0;
+                    wordIndex++;
+                    currentWord = words[wordIndex % words.Length];
+                    currentChar = currentWord[0].ToString();
+                    wordLength = currentWord.Length;
+                    // UPdate the word to the screen
+                    textBox.text = currentWord;
+                }
             }
-            else
+            // User fucked up
+            else if (Input.anyKeyDown)
             {
-                // Get the next word and reset information
-                Debug.Log("Word completed~");
-                overlay.text = "";
-                currentIndex = 0;
-                wordIndex++;
-                currentWord = words[wordIndex % words.Length];
-                currentChar = currentWord[0].ToString();
-                wordLength = currentWord.Length;
-                // UPdate the word to the screen
-                textBox.text = currentWord;
+                // Reset back to the beginning of the word
+                Debug.Log("Word reset");
+                overlays[i].text = "";
+                // currentIndex = 0;
+                // currentChar = currentWord[currentIndex].ToString();
+                active[i].SetActive(false);
+                active.RemoveAt(i);
+                i--;
             }
-        }
-        // User fucked up
-        else if (Input.anyKeyDown)
-        {
-            // Reset back to the beginning of the word
-            Debug.Log("Word reset");
-            overlay.text = "";
-            currentIndex = 0;
-            currentChar = currentWord[currentIndex].ToString();
         }
     }
 }
