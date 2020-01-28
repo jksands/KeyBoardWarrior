@@ -30,14 +30,22 @@ public class Player : MonoBehaviour
     // For future consideration
     private List<Text> textBoxes;
     private List<Text> overlays;
+    private List<Text> savedOverlays;
     private List<GameObject> active;
 
     private List<string> currentWords;
+
+    private Dictionary<string, string[]> subMenus;
+
+    private string currentMenu = "default";
     
 
     // Start is called before the first frame update
     void Start()
     {
+        subMenus = new Dictionary<string, string[]>();
+        subMenus.Add("default", new string[] { "attack", "defend", "item" });
+        subMenus.Add("attack", new string[] { "strongattack", "yeet", "yote" });
         textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
 
@@ -48,15 +56,17 @@ public class Player : MonoBehaviour
         currentWords = new List<string>();
 
         // For future consideration
-       for(int i = 0; i < empties.Length;  i++)
-       {
-           empties[i].SetActive(true);
-           textBoxes.Add(empties[i].transform.GetChild(0).gameObject.GetComponent<Text>());
-           overlays.Add(empties[i].transform.GetChild(1).gameObject.GetComponent<Text>());
-           active.Add(empties[i]);
-           // list of words that are mapped to the textboxes
-            currentWords.Add(words[i]);
-       }
+        for (int i = 0; i < empties.Length; i++)
+        {
+            empties[i].SetActive(true);
+            textBoxes.Add(empties[i].transform.GetChild(0).gameObject.GetComponent<Text>());
+            overlays.Add(empties[i].transform.GetChild(1).gameObject.GetComponent<Text>());
+            active.Add(empties[i]);
+            // list of words that are mapped to the textboxes
+            //currentWords.Add(words[i]);
+        }
+        savedOverlays = new List<Text>(overlays);
+        MakeActive(currentMenu);
 
         wordIndex = 0;
         currentIndex = 0;
@@ -80,44 +90,79 @@ public class Player : MonoBehaviour
         for (int i = 0; i < active.Count; i++)
         {
             // This checks if the user has typed the current char
-            if (Input.GetKeyDown(currentWords[i][currentIndex].ToString()))
+            if (Input.GetKeyDown((currentChar = currentWords[i][currentIndex].ToString())))
             {
                 // Increment the character index
                 currentIndex++;
                 // If we're not at the end of the word
-                if (currentIndex != words[i].Length)
+                if (currentIndex != currentWords[i].Length)
                 {
                     Debug.Log(currentChar);
-                    overlays[i].text += currentChar;
                     // Get the next character
+                    overlays[i].text += currentChar;
                     currentChar = currentWords[i][currentIndex].ToString();
                 }
                 else
                 {
                     // Get the next word and reset information
                     Debug.Log("Word completed~");
-                    overlay.text = "";
+                    overlays[i].text = "";
                     currentIndex = 0;
-                    wordIndex++;
-                    currentWord = words[wordIndex % words.Length];
-                    currentChar = currentWord[0].ToString();
-                    wordLength = currentWord.Length;
-                    // UPdate the word to the screen
-                    textBox.text = currentWord;
+
+                    // This is where we would access the "subMenu"
+                    if (subMenus.ContainsKey(currentWords[i]))
+                    {
+                        currentMenu = currentWords[i];
+                        MakeActive(currentMenu);
+                    }
+                    else
+                    {
+                        MakeActive("default");
+                    }
+                    // wordIndex++;
+                    // currentWord = words[wordIndex % words.Length];
+                    // currentChar = currentWord[0].ToString();
+                    // wordLength = currentWord.Length;
+                    // // UPdate the word to the screen
+                    // textBox.text = currentWord;
                 }
             }
             // User fucked up
             else if (Input.anyKeyDown)
             {
-                // Reset back to the beginning of the word
+                // Reset back to the beginning of the menu
                 Debug.Log("Word reset");
                 overlays[i].text = "";
                 // currentIndex = 0;
                 // currentChar = currentWord[currentIndex].ToString();
+                currentWords.RemoveAt(i);
+                overlays.RemoveAt(i);
+                Debug.Log(savedOverlays.Count);
                 active[i].SetActive(false);
                 active.RemoveAt(i);
                 i--;
             }
+        }
+
+        // User fucked up typing all words
+        if (active.Count == 0)
+        {
+            // Reset
+            MakeActive(currentMenu);
+        }
+    }
+
+    public void MakeActive(string key)
+    {
+        currentWords.Clear();
+        // overlays.Clear();
+        string[] temp = subMenus[key];
+        // iterate through the options
+        for (int i = 0; i < temp.Length; i++)
+        {
+            empties[i].SetActive(true);
+            currentWords.Add(temp[i]);
+            textBoxes[i].text = temp[i];
         }
     }
 }
