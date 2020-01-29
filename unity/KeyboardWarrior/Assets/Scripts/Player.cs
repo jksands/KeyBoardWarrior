@@ -55,17 +55,20 @@ public class Player : MonoBehaviour
 
         currentWords = new List<string>();
 
+        savedOverlays = new List<Text>();
+        // savedOverlays = new List<Text>(overlays);
         // For future consideration
         for (int i = 0; i < empties.Length; i++)
         {
             empties[i].SetActive(true);
             textBoxes.Add(empties[i].transform.GetChild(0).gameObject.GetComponent<Text>());
             overlays.Add(empties[i].transform.GetChild(1).gameObject.GetComponent<Text>());
+            // savedOverlays.Add(empties[i].transform.GetChild(1).gameObject.GetComponent<Text>());
             active.Add(empties[i]);
             // list of words that are mapped to the textboxes
             //currentWords.Add(words[i]);
         }
-        savedOverlays = new List<Text>(overlays);
+        Debug.Log(overlays.Count);
         MakeActive(currentMenu);
 
         wordIndex = 0;
@@ -136,7 +139,10 @@ public class Player : MonoBehaviour
                 // currentIndex = 0;
                 // currentChar = currentWord[currentIndex].ToString();
                 currentWords.RemoveAt(i);
+
+                savedOverlays.Add(overlays[i]);
                 overlays.RemoveAt(i);
+
                 Debug.Log(savedOverlays.Count);
                 active[i].SetActive(false);
                 active.RemoveAt(i);
@@ -155,7 +161,7 @@ public class Player : MonoBehaviour
     public void MakeActive(string key)
     {
         currentWords.Clear();
-        // overlays.Clear();
+        // overlays = savedOverlays;
         string[] temp = subMenus[key];
         // iterate through the options
         for (int i = 0; i < temp.Length; i++)
