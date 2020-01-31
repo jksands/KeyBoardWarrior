@@ -45,10 +45,15 @@ public class Player : MonoBehaviour
     private string currentMenu = "default";
 
     // used to check if user fucks up all three text boxes
-    private int counter = 0;
+    public float counter = 0;
+
+    // Delay until player can type again (in seconds)
+    public float delay = 1;
 
     // Used to keep track of menu depths (so you can go back properly)
     public Stack<string> menus;
+
+    bool counting = false;
     
 
     // Start is called before the first frame update
@@ -108,87 +113,111 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        counter = 0;
+        if (counting)
+        {
+            counter += Time.deltaTime;
+            if (counter > delay)
+            {
+                canType = true;
+                counter = 0;
+                counting = false;
+                RemoveWrong();
+            }
+        }
         // Quit this shit
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(0);
             // SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
         }
-        Debug.Log("active Count: " + active.Count);
-        for (int i = 0; i < active.Count; i++)
+        if (canType)
         {
-            // This checks if the user has typed the current char
-            if (Input.GetKeyDown((currentChar = currentWords[i][indices[i]].ToString())))
+            counter = 0;
+            for (int i = 0; i < active.Count; i++)
             {
-                // Increment the character index
-                indices[i]++;
-                // If we're not at the end of the word
-                if (indices[i] != currentWords[i].Length)
+                // This checks if the user has typed the current char
+                if (Input.GetKeyDown((currentChar = currentWords[i][indices[i]].ToString())))
                 {
-                    Debug.Log(currentChar);
-                    // Get the next character
-                    overlays[i].text += currentChar;
-                    currentChar = currentWords[i][indices[i]].ToString();
-                }
-                else
-                {
-                    // Get the next word and reset information
-                    if (currentWords[i] == "back")
+                    // Increment the character index
+                    indices[i]++;
+                    // If we're not at the end of the word
+                    if (indices[i] != currentWords[i].Length)
                     {
-                        MakeActive(currentMenu = menus.Pop());
-                    }
-                    // This is where we would access the "subMenu"
-                    else if (subMenus.ContainsKey(currentWords[i]))
-                    {
-                        menus.Push(currentMenu);
-                        currentMenu = currentWords[i];
-                        MakeActive(currentMenu);
+                        Debug.Log(currentChar);
+                        // Get the next character
+                        overlays[i].text += currentChar;
+                        currentChar = currentWords[i][indices[i]].ToString();
                     }
                     else
                     {
-                        MakeActive(currentMenu = "default");
+                        // Get the next word and reset information
+                        if (currentWords[i] == "back")
+                        {
+                            MakeActive(currentMenu = menus.Pop());
+                        }
+                        // This is where we would access the "subMenu"
+                        else if (subMenus.ContainsKey(currentWords[i]))
+                        {
+                            menus.Push(currentMenu);
+                            currentMenu = currentWords[i];
+                            MakeActive(currentMenu);
+                        }
+                        else
+                        {
+                            MakeActive(currentMenu = "default");
+                        }
+
+                        // Not needed anymore 
+                        // wordIndex++;
+                        // currentWord = words[wordIndex % words.Length];
+                        // currentChar = currentWord[0].ToString();
+                        // wordLength = currentWord.Length;
+                        // // UPdate the word to the screen
+                        // textBox.text = currentWord;
                     }
-
-                    // Not needed anymore 
-                    // wordIndex++;
-                    // currentWord = words[wordIndex % words.Length];
-                    // currentChar = currentWord[0].ToString();
-                    // wordLength = currentWord.Length;
-                    // // UPdate the word to the screen
-                    // textBox.text = currentWord;
                 }
-            }
-            // User fucked up
-            else if (Input.anyKeyDown)
-            {
-                // Increemtn the counter when a word is screwed up
-                counter++;
-
-                // If all words are screwed up, reset the entire menu
-                if (counter == indices.Count)
+                // User fucked up
+                else if (Input.anyKeyDown)
                 {
-                    counter = 0;
-                    MakeActive(currentMenu);
+                    // Increemtn the counter when a word is screwed up
+                    counter++;
+
+                    // If all words are screwed up, reset the entire menu
+                    if (counter == indices.Count)
+                    {
+                        counter = 0;
+                        // Display all words red to user
+                        canType = false;
+                        MakeActive(currentMenu);
+                        ActivateWrong();
+                        counting = true;
+                    }
                 }
+
             }
 
+
         }
 
-        // User fucked up typing all words
-        if (active.Count == 0)
-        {
-            // Reset
-            Debug.Log("Resetting");
-            MakeActive(currentMenu);
-        }
+        // Debug.Log(active.Count);
+        // // User fucked up typing all words
+        // if (active.Count == 0)
+        // {
+        //     // Reset
+        //     Debug.Log("Resetting");
+        //     canType = false;
+        // 
+        //     MakeActive(currentMenu);
+        // }
     }
 
     public void MakeActive(string key)
     {
+        Debug.Log("???");
         currentWords.Clear();
         // overlays.Clear();
         active.Clear();
+        indices.Clear();
         string[] temp = subMenus[key];
         // Debug.Log("length: " + temp.Length);
 
@@ -196,7 +225,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < temp.Length; i++)
         {
             empties[i].SetActive(true);
-            indices[i] = 0;
+            indices.Add(0);
             overlays[i].text = "";
             active.Add(empties[i]);
             // Debug.Log("Empties? SHould be 3: " + 3);
@@ -210,7 +239,25 @@ public class Player : MonoBehaviour
         for (int i = temp.Length; i < empties.Length; i++)
         {
             empties[i].SetActive(false);
-            indices[i] = 0;
+            // indices[i] = 0;
+            overlays[i].text = "";
+        }
+    }
+
+    public void ActivateWrong()
+    {
+
+        for (int i = 0; i < active.Count; i++)
+        {
+            overlays[i].color = Color.red;
+            overlays[i].text = currentWords[i];
+        }
+    }
+    public void RemoveWrong()
+    {
+        for (int i = 0; i < active.Count; i++)
+        {
+            overlays[i].color = Color.yellow;
             overlays[i].text = "";
         }
     }
