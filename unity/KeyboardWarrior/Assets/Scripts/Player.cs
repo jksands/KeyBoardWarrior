@@ -53,7 +53,9 @@ public class Player : MonoBehaviour
     // Used to keep track of menu depths (so you can go back properly)
     public Stack<string> menus;
 
-    bool counting = false;
+    private bool counting = false;
+
+    public int padding = 20;
     
 
     // Start is called before the first frame update
@@ -62,11 +64,11 @@ public class Player : MonoBehaviour
 
         // init stack
         menus = new Stack<string>();
-        // menus.Push("default");      // Default menu is top level
         // Init dictionary
         subMenus = new Dictionary<string, string[]>();
-        subMenus.Add("default", new string[] { "attack", "defend", "item" });
-        subMenus.Add("attack", new string[] { "strongattack", "yeet", "yote", "back" });
+        subMenus.Add("default", new string[] { "attack", "defend", "special" });
+        subMenus.Add("attack", new string[] { "ensnare-drum", "violince", "flute-by-the-foot", "back" });
+        subMenus.Add("special", new string[] {"healing-vibes", "pentometer",  "keytar-solo", "back"});
         // Single textboxes (not used anymore
         // textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         // overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
@@ -145,7 +147,9 @@ public class Player : MonoBehaviour
                     {
                         Debug.Log(currentChar);
                         // Get the next character
+                        //overlays[i].text.Insert(indices[i], currentChar);
                         overlays[i].text += currentChar;
+                            
                         currentChar = currentWords[i][indices[i]].ToString();
                     }
                     else
@@ -226,13 +230,14 @@ public class Player : MonoBehaviour
         {
             empties[i].SetActive(true);
             indices.Add(0);
-            overlays[i].text = "";
             active.Add(empties[i]);
             // Debug.Log("Empties? SHould be 3: " + 3);
             // overlays.Add(savedOverlays[i]);
             // Debug.Log("Overlays: " + overlays.Count);
             currentWords.Add(temp[i]);
-            textBoxes[i].text = temp[i];
+            // Add padding so everything is centered even though the boxes are aligned left
+            overlays[i].text = "".PadLeft(padding - temp[i].Length);
+            textBoxes[i].text = temp[i].PadLeft(padding);
         }
 
         // set all other boxes to inactive
@@ -250,7 +255,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < active.Count; i++)
         {
             overlays[i].color = Color.red;
-            overlays[i].text = currentWords[i];
+            overlays[i].text = currentWords[i].PadLeft(padding);
         }
     }
     public void RemoveWrong()
@@ -258,7 +263,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < active.Count; i++)
         {
             overlays[i].color = Color.yellow;
-            overlays[i].text = "";
+            overlays[i].text = "".PadLeft(padding - currentWords[i].Length);
         }
     }
 }
