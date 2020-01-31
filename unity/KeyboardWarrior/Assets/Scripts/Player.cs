@@ -55,7 +55,7 @@ public class Player : MonoBehaviour
 
     private bool counting = false;
 
-    public int padding = 20;
+    public int padding = 10;
 
     // Used to allow the player to target enemies
     public EnemyManager enemyManager;
@@ -253,8 +253,10 @@ public class Player : MonoBehaviour
             // Debug.Log("Overlays: " + overlays.Count);
             currentWords.Add(temp[i]);
             // Add padding so everything is centered even though the boxes are aligned left
-            overlays[i].text = "".PadLeft(padding - temp[i].Length);
-            textBoxes[i].text = temp[i].PadLeft(padding);
+            // overlays[i].text = "".PadRight(padding - temp[i].Length);
+            // textBoxes[i].text = temp[i].PadRight(padding);
+            overlays[i].text = "";
+            textBoxes[i].text = temp[i];
         }
 
         // set all other boxes to inactive
@@ -272,7 +274,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < active.Count; i++)
         {
             overlays[i].color = Color.red;
-            overlays[i].text = currentWords[i].PadLeft(padding);
+            overlays[i].text = currentWords[i];
         }
     }
     public void RemoveWrong()
@@ -280,7 +282,7 @@ public class Player : MonoBehaviour
         for (int i = 0; i < active.Count; i++)
         {
             overlays[i].color = Color.yellow;
-            overlays[i].text = "".PadLeft(padding - currentWords[i].Length);
+            overlays[i].text = "";
         }
     }
 }
