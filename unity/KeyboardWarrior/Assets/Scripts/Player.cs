@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
     // Holds active words
     private List<GameObject> active;
     // Holds indices for active words
-    private int[] indices;
+    private List<int> indices;
     // Holds current words
     private List<string> currentWords;
     //Dictionary that holds submenus.  Key = word that was jus ttyped!
@@ -46,17 +46,22 @@ public class Player : MonoBehaviour
 
     // used to check if user fucks up all three text boxes
     private int counter = 0;
+
+    // Used to keep track of menu depths (so you can go back properly)
+    public Stack<string> menus;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        // Word indices
-        indices = new int[3] { 0, 0, 0 };
+
+        // init stack
+        menus = new Stack<string>();
+        // menus.Push("default");      // Default menu is top level
         // Init dictionary
         subMenus = new Dictionary<string, string[]>();
         subMenus.Add("default", new string[] { "attack", "defend", "item" });
-        subMenus.Add("attack", new string[] { "strongattack", "yeet", "yote" });
+        subMenus.Add("attack", new string[] { "strongattack", "yeet", "yote", "back" });
         // Single textboxes (not used anymore
         // textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         // overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
@@ -67,17 +72,22 @@ public class Player : MonoBehaviour
         active = new List<GameObject>();
 
         currentWords = new List<string>();
+        //Word indices
+        indices = new List<int>();
 
         // Populate empties with textboxes and set empties to active
         for (int i = 0; i < empties.Length; i++)
         {
-            empties[i].SetActive(true);
+            // empties[i].SetActive(true);
             textBoxes.Add(empties[i].transform.GetChild(0).gameObject.GetComponent<Text>());
             overlays.Add(empties[i].transform.GetChild(1).gameObject.GetComponent<Text>());
-            active.Add(empties[i]);
+            // active.Add(empties[i]);
+            indices.Add(0);
         }
         // Init the menu system
         MakeActive(currentMenu);
+
+
 
         // Not needed anymore?
         // wordIndex = 0;
@@ -105,6 +115,7 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene(0);
             // SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
         }
+        Debug.Log("active Count: " + active.Count);
         for (int i = 0; i < active.Count; i++)
         {
             // This checks if the user has typed the current char
@@ -123,10 +134,14 @@ public class Player : MonoBehaviour
                 else
                 {
                     // Get the next word and reset information
-
-                    // This is where we would access the "subMenu"
-                    if (subMenus.ContainsKey(currentWords[i]))
+                    if (currentWords[i] == "back")
                     {
+                        MakeActive(currentMenu = menus.Pop());
+                    }
+                    // This is where we would access the "subMenu"
+                    else if (subMenus.ContainsKey(currentWords[i]))
+                    {
+                        menus.Push(currentMenu);
                         currentMenu = currentWords[i];
                         MakeActive(currentMenu);
                     }
@@ -151,7 +166,7 @@ public class Player : MonoBehaviour
                 counter++;
 
                 // If all words are screwed up, reset the entire menu
-                if (counter == 3)
+                if (counter == indices.Count)
                 {
                     counter = 0;
                     MakeActive(currentMenu);
@@ -173,7 +188,7 @@ public class Player : MonoBehaviour
     {
         currentWords.Clear();
         // overlays.Clear();
-        // active.Clear();
+        active.Clear();
         string[] temp = subMenus[key];
         // Debug.Log("length: " + temp.Length);
 
@@ -183,12 +198,20 @@ public class Player : MonoBehaviour
             empties[i].SetActive(true);
             indices[i] = 0;
             overlays[i].text = "";
-            // active.Add(empties[i]);
+            active.Add(empties[i]);
             // Debug.Log("Empties? SHould be 3: " + 3);
             // overlays.Add(savedOverlays[i]);
             // Debug.Log("Overlays: " + overlays.Count);
             currentWords.Add(temp[i]);
             textBoxes[i].text = temp[i];
+        }
+
+        // set all other boxes to inactive
+        for (int i = temp.Length; i < empties.Length; i++)
+        {
+            empties[i].SetActive(false);
+            indices[i] = 0;
+            overlays[i].text = "";
         }
     }
 }
