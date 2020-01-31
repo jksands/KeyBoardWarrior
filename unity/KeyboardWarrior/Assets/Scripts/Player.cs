@@ -56,7 +56,9 @@ public class Player : MonoBehaviour
     private bool counting = false;
 
     public int padding = 20;
-    
+
+    // Used to allow the player to target enemies
+    public EnemyManager enemyManager;
 
     // Start is called before the first frame update
     void Start()
@@ -66,9 +68,10 @@ public class Player : MonoBehaviour
         menus = new Stack<string>();
         // Init dictionary
         subMenus = new Dictionary<string, string[]>();
-        subMenus.Add("default", new string[] { "attack", "defend", "special" });
+        subMenus.Add("default", new string[] { "attack", "defend", "special", "target" });
         subMenus.Add("attack", new string[] { "ensnare-drum", "violince", "flute-by-the-foot", "back" });
         subMenus.Add("special", new string[] {"healing-vibes", "pentometer",  "keytar-solo", "back"});
+        subMenus.Add("target", new string[] {enemyManager.enemies[0].name, enemyManager.enemies[1].name, enemyManager.enemies[2].name, "back" });
         // Single textboxes (not used anymore
         // textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         // overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
@@ -165,6 +168,20 @@ public class Player : MonoBehaviour
                             menus.Push(currentMenu);
                             currentMenu = currentWords[i];
                             MakeActive(currentMenu);
+                        }
+                        // We're currently in the target menu, so target an enemy
+                        else if (currentMenu == "target")
+                        {
+                            // The selected enemy's index should match the index of the word in the array
+                            enemyManager.TargetEnemy(enemyManager.enemies[i]);
+                            MakeActive(currentMenu = "default");
+                        }
+                        // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
+                        else if (currentMenu == "attack")
+                        {
+                            // Going simple, each attack does a different amount of damage. Not yet balanced for each word
+                            enemyManager.DamageTarget(i + 3);
+                            MakeActive(currentMenu = "default");
                         }
                         else
                         {
