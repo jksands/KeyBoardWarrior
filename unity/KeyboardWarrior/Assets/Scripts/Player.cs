@@ -35,8 +35,14 @@ public class Player : MonoBehaviour
     // private List<Text> savedOverlays;
     // Holds active words
     private List<GameObject> active;
+    // Holds valid indices
+    private List<int> validIndices;
     // Holds indices for active words
     private List<int> indices;
+    // Holds the index
+    int index;
+    // Index that tracks over all words
+    private int globalIndex;
     // Holds current words
     private List<string> currentWords;
     //Dictionary that holds submenus.  Key = word that was jus ttyped!
@@ -80,6 +86,7 @@ public class Player : MonoBehaviour
         textBoxes = new List<Text>();
         overlays = new List<Text>();
         active = new List<GameObject>();
+        validIndices = new List<int>();
 
         currentWords = new List<string>();
         //Word indices
@@ -96,6 +103,7 @@ public class Player : MonoBehaviour
         }
         // Init the menu system
         MakeActive(currentMenu);
+        // canType = false;
 
 
 
@@ -137,57 +145,76 @@ public class Player : MonoBehaviour
         }
         if (canType)
         {
-            counter = 0;
-            for (int i = 0; i < active.Count; i++)
+            // counter = 0;
+            for (int i = 0; i < validIndices.Count; i++)
             {
+                index = validIndices[i];
+
                 // This checks if the user has typed the current char
-                if (Input.GetKeyDown((currentChar = currentWords[i][indices[i]].ToString())))
+                if (Input.GetKeyDown((currentChar = currentWords[index][indices[index]].ToString())))
                 {
-                    // Increment the character index
-                    indices[i]++;
+                    Debug.Log("INDEX: " + index);
+                    indices[index]++;
+                   // if (indices[index] == globalIndex)
+                   // {
+                   //     // Increment the character index
+                   //     indices[index]++;
+                   //     // Set the global index to THIS index
+                   //     globalIndex = indices[index];
+                   // }
+                   // // Otherwise, check the words and see if the char at globalindex is correct
+                   // else {
+                   //     // counter++;
+                   //     continue;
+                   // }
+
                     // If we're not at the end of the word
-                    if (indices[i] != currentWords[i].Length)
+                    if (indices[index] != currentWords[index].Length)
                     {
-                        Debug.Log(currentChar);
+                        Debug.Log("Char guessed: " + currentChar);
                         // Get the next character
                         //overlays[i].text.Insert(indices[i], currentChar);
-                        overlays[i].text += currentChar;
+                        overlays[index].text += currentChar;
                             
-                        currentChar = currentWords[i][indices[i]].ToString();
+                        currentChar = currentWords[index][indices[index]].ToString();
                     }
                     else
                     {
+                        Debug.Log("Word Completed!");
+                        canType = false;
                         // Get the next word and reset information
-                        if (currentWords[i] == "back")
+                        if (currentWords[index] == "back")
                         {
                             MakeActive(currentMenu = menus.Pop());
                         }
                         // This is where we would access the "subMenu"
-                        else if (subMenus.ContainsKey(currentWords[i]))
+                        else if (subMenus.ContainsKey(currentWords[index]))
                         {
                             menus.Push(currentMenu);
-                            currentMenu = currentWords[i];
+                            currentMenu = currentWords[index];
                             MakeActive(currentMenu);
                         }
                         // We're currently in the target menu, so target an enemy
                         else if (currentMenu == "target")
                         {
                             // The selected enemy's index should match the index of the word in the array
-                            enemyManager.TargetEnemy(enemyManager.enemies[i]);
+                            enemyManager.TargetEnemy(enemyManager.enemies[index]);
                             MakeActive(currentMenu = "default");
                         }
                         // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
                         else if (currentMenu == "attack")
                         {
                             // Going simple, each attack does a different amount of damage. Not yet balanced for each word
-                            enemyManager.DamageTarget(i + 3);
+                            enemyManager.DamageTarget(index + 3);
                             MakeActive(currentMenu = "default");
                         }
                         else
                         {
                             MakeActive(currentMenu = "default");
                         }
-
+                        // Break out of the for loop as the word was found
+                        // And the list will be repopulated
+                        break;
                         // Not needed anymore 
                         // wordIndex++;
                         // currentWord = words[wordIndex % words.Length];
@@ -200,18 +227,20 @@ public class Player : MonoBehaviour
                 // User fucked up
                 else if (Input.anyKeyDown)
                 {
-                    // Increemtn the counter when a word is screwed up
-                    counter++;
+                    // Increment the counter when a word is screwed up
+                    // counter++;
+                    validIndices.RemoveAt(i);
+                    i--;
 
                     // If all words are screwed up, reset the entire menu
-                    if (counter == indices.Count)
+                    if (validIndices.Count == 0)
                     {
-                        counter = 0;
+                        // counter = 0;
                         // Display all words red to user
                         canType = false;
-                        MakeActive(currentMenu);
                         ActivateWrong();
                         counting = true;
+                        // break;
                     }
                 }
 
@@ -235,16 +264,19 @@ public class Player : MonoBehaviour
     public void MakeActive(string key)
     {
         Debug.Log("???");
+        globalIndex = 0;
         currentWords.Clear();
         // overlays.Clear();
         active.Clear();
         indices.Clear();
+        validIndices.Clear();
         string[] temp = subMenus[key];
         // Debug.Log("length: " + temp.Length);
 
         // iterate through the options
         for (int i = 0; i < temp.Length; i++)
         {
+            validIndices.Add(i);
             empties[i].SetActive(true);
             indices.Add(0);
             active.Add(empties[i]);
@@ -258,6 +290,7 @@ public class Player : MonoBehaviour
             overlays[i].text = "";
             textBoxes[i].text = temp[i];
         }
+        Debug.Log("Valid indices? " + validIndices.Count);
 
         // set all other boxes to inactive
         for (int i = temp.Length; i < empties.Length; i++)
@@ -266,8 +299,10 @@ public class Player : MonoBehaviour
             // indices[i] = 0;
             overlays[i].text = "";
         }
+        canType = true;
     }
 
+    // When user types incorrectly, turn everything red
     public void ActivateWrong()
     {
 
@@ -277,6 +312,7 @@ public class Player : MonoBehaviour
             overlays[i].text = currentWords[i];
         }
     }
+    // Remove red when time is done
     public void RemoveWrong()
     {
         for (int i = 0; i < active.Count; i++)
@@ -284,5 +320,6 @@ public class Player : MonoBehaviour
             overlays[i].color = Color.yellow;
             overlays[i].text = "";
         }
+        MakeActive(currentMenu);
     }
 }
