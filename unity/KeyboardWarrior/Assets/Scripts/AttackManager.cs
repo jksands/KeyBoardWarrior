@@ -11,14 +11,14 @@ public class AttackManager : MonoBehaviour
     public Canvas canvas;
     private List<GameObject> attacks;
 
-    public float timePool = 10;
+    public float timePool = 5;
     public float timer = 0;
     private int sheepToggle = 0;
     // Start is called before the first frame update
     void Start()
     {
         p1 = bard.GetComponent<Player>();
-        timePool = 10;
+        timePool = 3;
         attacks = new List<GameObject>();
         // p1.WasAttacked(em.enemies[0].gameObject);
     }

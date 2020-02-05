@@ -329,7 +329,7 @@ public class Player : MonoBehaviour
     {
         Debug.Log("I was attacked by: " + attack.name);
         overlays.Add(attack.transform.GetChild(1).gameObject.GetComponent<Text>());
-        overlays[overlays.Count - 1].text = "TEST";
+        overlays[overlays.Count - 1].text = "BAAAAAA";
     }
     public void SpawnAttack()
     {
