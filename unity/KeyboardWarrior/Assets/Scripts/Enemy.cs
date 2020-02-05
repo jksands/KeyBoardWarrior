@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
     // Displays the enemy's health, will change to a bar maybe?
     public Text healthBox;
 
+    public Text attackBox;
+
 
     private void Start()
     {

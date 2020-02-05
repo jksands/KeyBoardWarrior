@@ -66,6 +66,9 @@ public class Player : MonoBehaviour
     // Used to allow the player to target enemies
     public EnemyManager enemyManager;
 
+    // Used to defend against attacks
+    public List<GameObject> attacks;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -153,7 +156,6 @@ public class Player : MonoBehaviour
                 // This checks if the user has typed the current char
                 if (Input.GetKeyDown((currentChar = currentWords[index][indices[index]].ToString())))
                 {
-                    Debug.Log("INDEX: " + index);
                     indices[index]++;
                    // if (indices[index] == globalIndex)
                    // {
@@ -290,7 +292,6 @@ public class Player : MonoBehaviour
             overlays[i].text = "";
             textBoxes[i].text = temp[i];
         }
-        Debug.Log("Valid indices? " + validIndices.Count);
 
         // set all other boxes to inactive
         for (int i = temp.Length; i < empties.Length; i++)
@@ -321,5 +322,17 @@ public class Player : MonoBehaviour
             overlays[i].text = "";
         }
         MakeActive(currentMenu);
+    }
+
+    // Pinged by the attack manager.  Updates fields appropriately
+    public void WasAttacked(GameObject attack)
+    {
+        Debug.Log("I was attacked by: " + attack.name);
+        overlays.Add(attack.transform.GetChild(1).gameObject.GetComponent<Text>());
+        overlays[overlays.Count - 1].text = "TEST";
+    }
+    public void SpawnAttack()
+    {
+
     }
 }
