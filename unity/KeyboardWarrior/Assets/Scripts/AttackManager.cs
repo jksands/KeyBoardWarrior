@@ -47,4 +47,10 @@ public class AttackManager : MonoBehaviour
             a.transform.position = pos;
         }
     }
+
+    public void RemoveAttack(GameObject attack)
+    {
+        attacks.Remove(attack);
+        Destroy(attack);
+    }
 }
