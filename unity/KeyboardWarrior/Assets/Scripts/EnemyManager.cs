@@ -7,7 +7,7 @@ public class EnemyManager : MonoBehaviour
     // Currently only stores info on enemies, will later queue up enemy attacks that the player has to avoid
     public List<Enemy> enemies;
     // Used when picking a random enemy
-    private List<Enemy> viableEnemies;
+    public List<Enemy> viableEnemies;
 
     public Enemy currentTarget;
 

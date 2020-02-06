@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
 
     // This should hold the textboxes
     public GameObject[] empties;
-    public Text textBox;
+    public Text healthBox;
     public Text overlay;
 
     // List to hold all text boxes
@@ -77,13 +77,16 @@ public class Player : MonoBehaviour
     // When you type an attack, the word progress you currently have will be reset.
     private bool attackRemoved;
 
-    private string[] specialChars = { "!", "@", "#", "$", "%", "^", "&", "*" };
+    private string[] specialChars = { "!", "@", "#", "$", "%", "^", "&", "*", "z", "x", "q", "v", "/", "'", ";", "w", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
     private Dictionary<string, string> specialToKey;
+    private int health = 10;
+    private int maxHealth = 10;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        healthBox.color = Color.green;
+        healthBox.text = health + "/" + maxHealth + " HP";
         // init stack
         menus = new Stack<string>();
         // Init dictionary
@@ -414,6 +417,12 @@ public class Player : MonoBehaviour
     public void TakeDamage(int i)
     {
         Debug.Log("Hark!  I have taken the damage!");
+        health -= i;
+        if (health <= 3)
+        {
+            healthBox.color = Color.red;
+        }
+        healthBox.text = health + "/" + maxHealth + " HP";
     }
 
     // Populates the special dictionary

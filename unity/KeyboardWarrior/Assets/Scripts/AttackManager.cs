@@ -21,7 +21,7 @@ public class AttackManager : MonoBehaviour
     void Start()
     {
         p1 = bard.GetComponent<Player>();
-        timePool = 5;
+        timePool = 7;
         attacks = new List<GameObject>();
         // p1.WasAttacked(em.enemies[0].gameObject);
     }
@@ -35,12 +35,13 @@ public class AttackManager : MonoBehaviour
         // If there are more enemies, attacks happen faster
         if (timer > timePool / temp)
         {
-            sheepPos = em.enemies[sheepToggle].transform.position;
-            sheepPos.y += 5;
+            sheepPos = em.viableEnemies[sheepToggle].transform.position;
+            sheepPos.y += 4;
             attacks.Add(Instantiate(attack, sheepPos, Quaternion.identity, canvas.transform));
             p1.WasAttacked(attacks[attacks.Count - 1]);
-            sheepToggle++;
-            sheepToggle %= temp;
+            // Choose a random sheep to attack
+            sheepToggle = Random.Range(0, em.viableEnemies.Count);
+            
             timer = 0;
         }
         for (int i = 0; i < attacks.Count; i++)
