@@ -413,9 +413,10 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int i)
     {
-
+        Debug.Log("Hark!  I have taken the damage!");
     }
 
+    // Populates the special dictionary
     public void PopulateDictionary()
     {
         

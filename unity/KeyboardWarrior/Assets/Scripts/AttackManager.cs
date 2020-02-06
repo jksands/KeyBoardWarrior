@@ -21,7 +21,7 @@ public class AttackManager : MonoBehaviour
     void Start()
     {
         p1 = bard.GetComponent<Player>();
-        timePool = 3;
+        timePool = 5;
         attacks = new List<GameObject>();
         // p1.WasAttacked(em.enemies[0].gameObject);
     }
@@ -50,6 +50,8 @@ public class AttackManager : MonoBehaviour
             attacks[i].transform.position = pos;
             if (attacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
             {
+                // Make the player take ONE WHOLE DAMAGE!
+                p1.TakeDamage(1);
                 Destroy(attacks[i]);
                 attacks.RemoveAt(i);
                 i--;
