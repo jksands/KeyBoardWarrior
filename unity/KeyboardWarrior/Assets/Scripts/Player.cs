@@ -77,6 +77,9 @@ public class Player : MonoBehaviour
     // When you type an attack, the word progress you currently have will be reset.
     private bool attackRemoved;
 
+    private string[] specialChars = { "!", "@", "#", "$", "%", "^", "&", "*" };
+    private Dictionary<string, string> specialToKey;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,9 +88,11 @@ public class Player : MonoBehaviour
         menus = new Stack<string>();
         // Init dictionary
         subMenus = new Dictionary<string, string[]>();
+        specialToKey = new Dictionary<string, string>();
+        PopulateDictionary();
         subMenus.Add("default", new string[] { "attack", "defend", "special", "target" });
-        subMenus.Add("attack", new string[] { "ensnare-drum", "violince", "flute-by-the-foot", "back" });
-        subMenus.Add("special", new string[] {"healing-vibes", "pentometer",  "keytar-solo", "back"});
+        subMenus.Add("attack", new string[] { "keytar-smash", "violince", "flute-by-the-foot", "back" });
+        subMenus.Add("special", new string[] {"vibrato-check", "ensnare-drum",  "keytar-solo", "back"});
         subMenus.Add("target", new string[] {enemyManager.enemies[0].name, enemyManager.enemies[1].name, enemyManager.enemies[2].name, "back" });
         // Single textboxes (not used anymore
         // textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
@@ -160,118 +165,10 @@ public class Player : MonoBehaviour
             // Optimization.  Only loops if there is a key down!
             if (Input.anyKeyDown)
             {
-                // Check attacks FIRST
-                for (int i = 0; i < attacks.Count; i++)
-                {
-                    // if user typed one of the defensible chars
-                    if (Input.GetKeyDown(attackWords[i]))
-                    {
-                        attackRemoved = true;
-                        RemoveAttack(i);
-                        i--;
-                        break;
-                    }
-                }
+                CheckAttacks();
                 if (!attackRemoved)
                 {
-                    for (int i = 0; i < validIndices.Count; i++)
-                    {
-                        index = validIndices[i];
-
-                        // This checks if the user has typed the current char
-                        if (Input.GetKeyDown((currentChar = currentWords[index][indices[index]].ToString())))
-                        {
-                            indices[index]++;
-                            // if (indices[index] == globalIndex)
-                            // {
-                            //     // Increment the character index
-                            //     indices[index]++;
-                            //     // Set the global index to THIS index
-                            //     globalIndex = indices[index];
-                            // }
-                            // // Otherwise, check the words and see if the char at globalindex is correct
-                            // else {
-                            //     // counter++;
-                            //     continue;
-                            // }
-
-                            // If we're not at the end of the word
-                            if (indices[index] != currentWords[index].Length)
-                            {
-                                Debug.Log("Char guessed: " + currentChar);
-                                // Get the next character
-                                //overlays[i].text.Insert(indices[i], currentChar);
-                                overlays[index].text += currentChar;
-
-                                currentChar = currentWords[index][indices[index]].ToString();
-                            }
-                            else
-                            {
-                                Debug.Log("Word Completed!");
-                                canType = false;
-                                // Get the next word and reset information
-                                if (currentWords[index] == "back")
-                                {
-                                    MakeActive(currentMenu = menus.Pop());
-                                }
-                                // This is where we would access the "subMenu"
-                                else if (subMenus.ContainsKey(currentWords[index]))
-                                {
-                                    menus.Push(currentMenu);
-                                    currentMenu = currentWords[index];
-                                    MakeActive(currentMenu);
-                                }
-                                // We're currently in the target menu, so target an enemy
-                                else if (currentMenu == "target")
-                                {
-                                    // The selected enemy's index should match the index of the word in the array
-                                    enemyManager.TargetEnemy(enemyManager.enemies[index]);
-                                    MakeActive(currentMenu = "default");
-                                }
-                                // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
-                                else if (currentMenu == "attack")
-                                {
-                                    // Going simple, each attack does a different amount of damage. Not yet balanced for each word
-                                    enemyManager.DamageTarget(index + 3);
-                                    MakeActive(currentMenu = "default");
-                                }
-                                else
-                                {
-                                    MakeActive(currentMenu = "default");
-                                }
-                                // Break out of the for loop as the word was found
-                                // And the list will be repopulated
-                                break;
-                                // Not needed anymore 
-                                // wordIndex++;
-                                // currentWord = words[wordIndex % words.Length];
-                                // currentChar = currentWord[0].ToString();
-                                // wordLength = currentWord.Length;
-                                // // UPdate the word to the screen
-                                // textBox.text = currentWord;
-                            }
-                        }
-                        // User fucked up
-                        else if (Input.anyKeyDown)
-                        {
-                            // Increment the counter when a word is screwed up
-                            // counter++;
-                            validIndices.RemoveAt(i);
-                            i--;
-
-                            // If all words are screwed up, reset the entire menu
-                            if (validIndices.Count == 0)
-                            {
-                                // counter = 0;
-                                // Display all words red to user
-                                canType = false;
-                                ActivateWrong();
-                                counting = true;
-                                // break;
-                            }
-                        }
-
-                    }
+                    PlayerType();
                 } 
                 else
                 {
@@ -295,7 +192,142 @@ public class Player : MonoBehaviour
         //     MakeActive(currentMenu);
         // }
     }
+    public void CheckAttacks()
+    {
+        // Check attacks FIRST
+        for (int i = 0; i < attacks.Count; i++)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                // If this is a special character, 
+                if (specialToKey.ContainsKey(attackWords[i]))
+                {
+                    // check if the user has pressed it
+                    if (Input.GetKeyDown(specialToKey[attackWords[i]]))
+                    {
+                        // If they have remove the attack
+                        attackRemoved = true;
+                        RemoveAttack(i);
+                        i--;
+                        break;
 
+                    }
+                }
+            }
+            // if user typed one of the defensible chars (and shift is not held)
+            else if (Input.GetKeyDown(attackWords[i]))
+            {
+                attackRemoved = true;
+                RemoveAttack(i);
+                i--;
+                break;
+            }
+        }
+    }
+    public void PlayerType()
+    {
+        for (int i = 0; i < validIndices.Count; i++)
+        {
+            index = validIndices[i];
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                // Do nothing?
+            }
+            // This checks if the user has typed the current char
+            else if (Input.GetKeyDown((currentChar = currentWords[index][indices[index]].ToString())))
+            {
+                indices[index]++;
+                // if (indices[index] == globalIndex)
+                // {
+                //     // Increment the character index
+                //     indices[index]++;
+                //     // Set the global index to THIS index
+                //     globalIndex = indices[index];
+                // }
+                // // Otherwise, check the words and see if the char at globalindex is correct
+                // else {
+                //     // counter++;
+                //     continue;
+                // }
+
+                // If we're not at the end of the word
+                if (indices[index] != currentWords[index].Length)
+                {
+                    Debug.Log("Char guessed: " + currentChar);
+                    // Get the next character
+                    //overlays[i].text.Insert(indices[i], currentChar);
+                    overlays[index].text += currentChar;
+
+                    currentChar = currentWords[index][indices[index]].ToString();
+                }
+                else
+                {
+                    Debug.Log("Word Completed!");
+                    canType = false;
+                    // Get the next word and reset information
+                    if (currentWords[index] == "back")
+                    {
+                        MakeActive(currentMenu = menus.Pop());
+                    }
+                    // This is where we would access the "subMenu"
+                    else if (subMenus.ContainsKey(currentWords[index]))
+                    {
+                        menus.Push(currentMenu);
+                        currentMenu = currentWords[index];
+                        MakeActive(currentMenu);
+                    }
+                    // We're currently in the target menu, so target an enemy
+                    else if (currentMenu == "target")
+                    {
+                        // The selected enemy's index should match the index of the word in the array
+                        enemyManager.TargetEnemy(enemyManager.enemies[index]);
+                        MakeActive(currentMenu = "default");
+                    }
+                    // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
+                    else if (currentMenu == "attack")
+                    {
+                        // Going simple, each attack does a different amount of damage. Not yet balanced for each word
+                        enemyManager.DamageTarget(index + 3);
+                        MakeActive(currentMenu = "default");
+                    }
+                    else
+                    {
+                        MakeActive(currentMenu = "default");
+                    }
+                    // Break out of the for loop as the word was found
+                    // And the list will be repopulated
+                    break;
+                    // Not needed anymore 
+                    // wordIndex++;
+                    // currentWord = words[wordIndex % words.Length];
+                    // currentChar = currentWord[0].ToString();
+                    // wordLength = currentWord.Length;
+                    // // UPdate the word to the screen
+                    // textBox.text = currentWord;
+                }
+            }
+            // User fucked up
+            else if (Input.anyKeyDown)
+            {
+                // Increment the counter when a word is screwed up
+                // counter++;
+                validIndices.RemoveAt(i);
+                i--;
+
+                // If all words are screwed up, reset the entire menu
+                if (validIndices.Count == 0)
+                {
+                    // counter = 0;
+                    // Display all words red to user
+                    canType = false;
+                    ActivateWrong();
+                    counting = true;
+                    // break;
+                }
+            }
+
+        }
+    }
     public void MakeActive(string key)
     {
         Debug.Log("???");
@@ -364,8 +396,10 @@ public class Player : MonoBehaviour
     {
         Debug.Log("I was attacked by: " + attack.name);
         // overlays.Add(attack.transform.GetChild(1).gameObject.GetComponent<Text>().text);
-        attack.transform.GetChild(1).gameObject.GetComponent<Text>().text = "z";
-        attackWords.Add("z");
+        string temp = specialChars[Random.Range(0, specialChars.Length)];
+        // string temp = "z";
+        attackWords.Add(temp);
+        attack.transform.GetChild(1).gameObject.GetComponent<Text>().text = temp;
         // overlays[overlays.Count - 1].text = "BAAAAAA";
         attacks.Add(attack);
     }
@@ -375,6 +409,20 @@ public class Player : MonoBehaviour
         am.RemoveAttack(attacks[i]);
         attacks.RemoveAt(i);
         attackWords.RemoveAt(i);
+    }
+
+    public void TakeDamage(int i)
+    {
+
+    }
+
+    public void PopulateDictionary()
+    {
+        
+        for (int i = 0; i < 8; i++)
+        {
+            specialToKey.Add(specialChars[i], "" + (i + 1));
+        }
     }
 
     

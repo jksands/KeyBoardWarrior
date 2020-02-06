@@ -887,6 +887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bd5f9a1242e1984eb13715e989e231d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bSprite: {fileID: 2011282439}
   bard: {fileID: 2011282437}
   em: {fileID: 1696387022}
   attack: {fileID: 1080619988}
@@ -1718,6 +1719,13 @@ MonoBehaviour:
   padding: 20
   enemyManager: {fileID: 1696387022}
   attacks: []
+  attackWords: []
+--- !u!212 &2011282439 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5072005585620715845, guid: 954d0a1703b53064dad8f6fab6b4e789,
+    type: 3}
+  m_PrefabInstance: {fileID: 3551634858429044032}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2046595295
 GameObject:
   m_ObjectHideFlags: 0

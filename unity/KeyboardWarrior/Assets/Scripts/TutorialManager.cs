@@ -19,7 +19,7 @@ public class TutorialManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        advanceBoxText = advanceBox.transform.FindChild("Text").GetComponent<Text>();
+        advanceBoxText = advanceBox.transform.Find("Text").GetComponent<Text>();
         //float width = advanceBoxText.
     }
 

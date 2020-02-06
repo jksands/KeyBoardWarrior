@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AttackManager : MonoBehaviour
 {
+    public SpriteRenderer bSprite;
     public GameObject bard;     // Holds the player
     private Player p1;          // Holds reference to player's player script
     public EnemyManager em;     // Enemy manager
@@ -14,6 +15,8 @@ public class AttackManager : MonoBehaviour
     public float timePool = 5;
     public float timer = 0;
     private int sheepToggle = 0;
+    Vector3 sheepPos;
+    Vector3 pos;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,20 +35,32 @@ public class AttackManager : MonoBehaviour
         // If there are more enemies, attacks happen faster
         if (timer > timePool / temp)
         {
-            
-            attacks.Add(Instantiate(attack, em.enemies[sheepToggle].transform.position, Quaternion.identity, canvas.transform));
+            sheepPos = em.enemies[sheepToggle].transform.position;
+            sheepPos.y += 5;
+            attacks.Add(Instantiate(attack, sheepPos, Quaternion.identity, canvas.transform));
             p1.WasAttacked(attacks[attacks.Count - 1]);
             sheepToggle++;
             sheepToggle %= temp;
             timer = 0;
         }
-        Vector3 pos;
-        foreach(GameObject a in attacks)
+        for (int i = 0; i < attacks.Count; i++)
         {
-            pos = a.transform.position;
+            pos = attacks[i].transform.position;
             pos.x -= 1 * Time.deltaTime;
-            a.transform.position = pos;
+            attacks[i].transform.position = pos;
+            if (attacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
+            {
+                Destroy(attacks[i]);
+                attacks.RemoveAt(i);
+                i--;
+            }
         }
+        //foreach(GameObject a in attacks)
+        //{
+        //    pos = a.transform.position;
+        //    pos.x -= 1 * Time.deltaTime;
+        //    a.transform.position = pos;
+        //}
     }
 
     public void RemoveAttack(GameObject attack)
