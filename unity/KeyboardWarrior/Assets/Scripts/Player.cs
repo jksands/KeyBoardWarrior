@@ -175,7 +175,8 @@ public class Player : MonoBehaviour
                 } 
                 else
                 {
-                    MakeActive(currentMenu);
+                    // MakeActive(currentMenu);
+                    ClearOverlays();
                     attackRemoved = false;
                 }
 
@@ -211,7 +212,7 @@ public class Player : MonoBehaviour
                         // If they have remove the attack
                         attackRemoved = true;
                         RemoveAttack(i);
-                        // Reset the overlays/player types
+                        // Reset the overlays/ what the player has typed
                         ClearOverlays();
                         i--;
                         break;
@@ -346,7 +347,7 @@ public class Player : MonoBehaviour
         List<string> toAdd = new List<string>(temp);
         toAdd.Remove("back");
         Debug.Log(toAdd.Count);
-        if (currentMenu != "default")
+        if (currentMenu != "default" && currentMenu != "target")
         {
 
 
@@ -416,12 +417,23 @@ public class Player : MonoBehaviour
             overlays[i].color = Color.yellow;
             overlays[i].text = "";
         }
-        MakeActive(currentMenu);
+        // MakeActive(currentMenu);
+        ClearOverlays();
     }
 
     public void ClearOverlays()
     {
 
+        indices.Clear();
+        validIndices.Clear();
+        // iterate through the options
+        for (int i = 0; i < 4; i++)
+        {
+            validIndices.Add(i);
+            indices.Add(0);
+
+            overlays[i].text = "";
+        }
     }
 
     // Pinged by the attack manager.  Updates fields appropriately

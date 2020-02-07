@@ -35,12 +35,12 @@ public class AttackManager : MonoBehaviour
         // If there are more enemies, attacks happen faster
         if (timer > timePool / temp)
         {
+            sheepToggle = Random.Range(0, em.viableEnemies.Count);
             sheepPos = em.viableEnemies[sheepToggle].transform.position;
             sheepPos.y += 4;
             attacks.Add(Instantiate(attack, sheepPos, Quaternion.identity, canvas.transform));
             p1.WasAttacked(attacks[attacks.Count - 1]);
             // Choose a random sheep to attack
-            sheepToggle = Random.Range(0, em.viableEnemies.Count);
             
             timer = 0;
         }
