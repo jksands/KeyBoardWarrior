@@ -14,6 +14,7 @@ public class AttackManager : MonoBehaviour
 
     public float timePool = 5;
     public float timer = 0;
+    public float attackSpeedMod = 1; //Multiplier for how fast attacks are coming out
     private int sheepToggle = 0;
     Vector3 sheepPos;
     Vector3 pos;
@@ -30,7 +31,7 @@ public class AttackManager : MonoBehaviour
     void Update()
     {
         // p1.WasAttacked(bard);
-        timer += Time.deltaTime;
+        timer += (Time.deltaTime * attackSpeedMod) ;
         int temp = em.enemies.Count;
         // If there are more enemies, attacks happen faster
         if (timer > timePool / temp)

@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     // reference to the attack manager
     public AttackManager am;
     // Reference to the awesome Manager
-    public AwesomeManager aweMan;
+    //public AwesomeManager aweMan;
     // String array of words
     private string[] words = { "attack", "item", "run"};
     // Holds the current word to type
@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
         specialToKey = new Dictionary<string, string>();
         PopulateDictionary();
         subMenus.Add("default", new string[] { "attack", "special", "target" });
-        subMenus.Add("attack", new string[] { "keytar-smash", "violince", "flute-by-the-foot", "harm-onica", "bam-jo", "back" });
+        subMenus.Add("attack", new string[] { "breakdance", "violince", "crash", "deathmetal", "bam-jo", "back" });
         subMenus.Add("special", new string[] {"vibrato-check", "ensnare-drum",  "keytar-solo", "back"});
         subMenus.Add("target", new string[] {enemyManager.enemies[0].name, enemyManager.enemies[1].name, enemyManager.enemies[2].name, "back" });
         // Single textboxes (not used anymore
@@ -305,12 +305,34 @@ public class Player : MonoBehaviour
                     // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
                     else if (currentMenu == "attack")
                     {
-                        int dmg = (int)(currentWords[index].Length - (speed * 2));
+                        int dmg = (int)(currentWords[index].Length - (speed * 2))*3;
                         if (dmg < 1) dmg = 1;
                         // Going simple, each attack does a different amount of damage. Not yet balanced for each word
                         enemyManager.DamageTarget(dmg);
                         speed = 0;
                         MakeActive(currentMenu = "default");
+                    }
+                    else if (currentMenu == "special") //Special menu, so activate some special effect
+                    {
+                        if (currentWords[index] == "vibrato-check")
+                        {
+                            for (int e = 0; e < enemyManager.enemies.Count; e++)
+                            {
+                                enemyManager.TargetEnemy(enemyManager.enemies[e]);
+                                enemyManager.DamageTarget(25);
+                            }
+                        }
+                        else if (currentWords[index] == "ensnare-drum")
+                        {
+                            am.attackSpeedMod = 0.75f;
+                        }
+                        else if (currentWords[index] == "keytar-solo")
+                        {
+                            enemyManager.DamageTarget(35); //Just a prototyping value
+                        }
+                        
+                        MakeActive(currentMenu = "default");
+                        speed = 0;
                     }
                     else
                     {
