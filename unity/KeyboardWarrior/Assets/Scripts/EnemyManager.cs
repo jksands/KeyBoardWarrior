@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -85,6 +86,11 @@ public class EnemyManager : MonoBehaviour
 
             if (target.IsDead())
                 viableEnemies.Remove(target);
+        }
+        if (viableEnemies.Count == 0)
+        {
+
+            SceneManager.LoadScene(4);
         }
     }
 }

@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 {
     // reference to the attack manager
     public AttackManager am;
+    // Reference to the awesome Manager
+    public AwesomeManager aweMan;
     // String array of words
     private string[] words = { "attack", "item", "run"};
     // Holds the current word to type
@@ -81,6 +83,9 @@ public class Player : MonoBehaviour
     private Dictionary<string, string> specialToKey;
     private int health = 10;
     private int maxHealth = 10;
+
+    private bool startedTyping = false;
+    public float speed = 0;
 
 
     // Start is called before the first frame update
@@ -157,6 +162,10 @@ public class Player : MonoBehaviour
                 counting = false;
                 RemoveWrong();
             }
+        }
+        if (startedTyping && currentMenu == "attack")
+        {
+            speed += Time.deltaTime;
         }
         // Quit this shit
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -244,6 +253,7 @@ public class Player : MonoBehaviour
             else if (Input.GetKeyDown((currentChar = currentWords[index][indices[index]].ToString())))
             {
                 indices[index]++;
+                startedTyping = true;
                 // if (indices[index] == globalIndex)
                 // {
                 //     // Increment the character index
@@ -270,7 +280,9 @@ public class Player : MonoBehaviour
                 else
                 {
                     Debug.Log("Word Completed!");
+                    startedTyping = false;
                     canType = false;
+                    // aweMan.SpawnAwesome();
                     // Get the next word and reset information
                     if (currentWords[index] == "back")
                     {
@@ -293,8 +305,11 @@ public class Player : MonoBehaviour
                     // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
                     else if (currentMenu == "attack")
                     {
+                        int dmg = (int)(currentWords[index].Length - (speed * 2));
+                        if (dmg < 1) dmg = 1;
                         // Going simple, each attack does a different amount of damage. Not yet balanced for each word
-                        enemyManager.DamageTarget(index + 3);
+                        enemyManager.DamageTarget(dmg);
+                        speed = 0;
                         MakeActive(currentMenu = "default");
                     }
                     else
@@ -468,6 +483,10 @@ public class Player : MonoBehaviour
             healthBox.color = Color.red;
         }
         healthBox.text = health + "/" + maxHealth + " HP";
+        if (health <= 0)
+        {
+            SceneManager.LoadScene(3);
+        }
     }
 
     // Populates the special dictionary

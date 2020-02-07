@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
 {
     // Stores data on the enemy
     public string name = "bad-guy";
-    public int maxHealth = 10;
+    public int maxHealth = 100;
     [SerializeField]
     private int health;
 
@@ -21,6 +21,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        maxHealth = 100;
         // Set the enemy's max health to it's given health
         health = maxHealth;
 
