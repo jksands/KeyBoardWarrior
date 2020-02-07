@@ -155,6 +155,6 @@ public class TutorialManager : MonoBehaviour
         advanceBoxOverlay.text = "";
 
         float width = advanceBoxText.preferredWidth;
-        advanceBox.transform.localPosition = new Vector3(-width / 2, 0, 0);
+        advanceBox.transform.localPosition = new Vector3(-width / 2, advanceBox.transform.localPosition.y, 0);
     }
 }
