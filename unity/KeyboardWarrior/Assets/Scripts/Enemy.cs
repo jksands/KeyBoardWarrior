@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        maxHealth = 100;
+        maxHealth = 50;
         // Set the enemy's max health to it's given health
         health = maxHealth;
 
