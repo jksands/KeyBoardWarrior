@@ -11,11 +11,14 @@ public class EnemyManager : MonoBehaviour
 
     public Enemy currentTarget;
 
+    public GameObject cursor;
+
     // Here incase we ever want to hide the enemies' names
     public bool showNames = true;
 
     private void Start()
     {
+        cursor.SetActive(false);
         viableEnemies = new List<Enemy>();
 
         foreach (Enemy e in enemies)
@@ -48,6 +51,8 @@ public class EnemyManager : MonoBehaviour
             currentTarget = newTarget;
             currentTarget.nameBox.color = Color.red;
         }
+        cursor.SetActive(true);
+        cursor.transform.position = currentTarget.gameObject.transform.position;
     }
 
     public void EndTarget()
@@ -69,6 +74,7 @@ public class EnemyManager : MonoBehaviour
             if (currentTarget.IsDead())
             {
                 viableEnemies.Remove(currentTarget);
+                cursor.SetActive(false);
                 EndTarget();
             }
         }
