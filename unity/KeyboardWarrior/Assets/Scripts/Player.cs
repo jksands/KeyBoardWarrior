@@ -87,6 +87,9 @@ public class Player : MonoBehaviour
     private bool startedTyping = false;
     public float speed = 0;
 
+    // Script variable for how many words are active right now
+    private int amount;
+
 
     // Start is called before the first frame update
     void Start()
@@ -360,10 +363,9 @@ public class Player : MonoBehaviour
         indices.Clear();
         validIndices.Clear();
         string[] temp = subMenus[key];
-        int amount = temp.Length;
+        amount = temp.Length;
         List<string> toAdd = new List<string>(temp);
         toAdd.Remove("back");
-        Debug.Log(toAdd.Count);
         if (currentMenu != "default" && currentMenu != "target")
         {
 
@@ -404,7 +406,7 @@ public class Player : MonoBehaviour
             // overlays[i].text = "".PadRight(padding - temp[i].Length);
             // textBoxes[i].text = temp[i].PadRight(padding);
         }
-
+        Debug.Log("Valid indices: " + validIndices.Count);
         // set all other boxes to inactive
         for (int i = temp.Length; i < empties.Length; i++)
         {
@@ -445,7 +447,7 @@ public class Player : MonoBehaviour
         indices.Clear();
         validIndices.Clear();
         // iterate through the options
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < amount; i++)
         {
             validIndices.Add(i);
             indices.Add(0);
