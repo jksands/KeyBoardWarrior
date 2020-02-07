@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         specialToKey = new Dictionary<string, string>();
         PopulateDictionary();
         subMenus.Add("default", new string[] { "attack", "defend", "special", "target" });
-        subMenus.Add("attack", new string[] { "keytar-smash", "violince", "flute-by-the-foot", "back" });
+        subMenus.Add("attack", new string[] { "keytar-smash", "violince", "flute-by-the-foot", "harm-onica", "bam-jo", "back" });
         subMenus.Add("special", new string[] {"vibrato-check", "ensnare-drum",  "keytar-solo", "back"});
         subMenus.Add("target", new string[] {enemyManager.enemies[0].name, enemyManager.enemies[1].name, enemyManager.enemies[2].name, "back" });
         // Single textboxes (not used anymore
@@ -211,6 +211,8 @@ public class Player : MonoBehaviour
                         // If they have remove the attack
                         attackRemoved = true;
                         RemoveAttack(i);
+                        // Reset the overlays/player types
+                        ClearOverlays();
                         i--;
                         break;
 
@@ -341,24 +343,47 @@ public class Player : MonoBehaviour
         indices.Clear();
         validIndices.Clear();
         string[] temp = subMenus[key];
-        // Debug.Log("length: " + temp.Length);
+        List<string> toAdd = new List<string>(temp);
+        toAdd.Remove("back");
+        Debug.Log(toAdd.Count);
+        if (currentMenu != "default")
+        {
+
+
+            // Add random words from toAdd (without back is always the last option)
+            for (int i = 0; i < 3; i++) // 3 is hardcoded for how many words we want to generate
+            {
+                int x = Random.Range(0, toAdd.Count);
+                currentWords.Add(toAdd[x]);
+                overlays[i].text = "";
+                textBoxes[i].text = toAdd[x];
+                toAdd.RemoveAt(x);
+            }
+            overlays[3].text = "";
+            textBoxes[3].text = "back";
+            currentWords.Add("back");
+        }
 
         // iterate through the options
-        for (int i = 0; i < temp.Length; i++)
+        for (int i = 0; i < 4; i++)
         {
             validIndices.Add(i);
             empties[i].SetActive(true);
             indices.Add(0);
             active.Add(empties[i]);
-            // Debug.Log("Empties? SHould be 3: " + 3);
             // overlays.Add(savedOverlays[i]);
             // Debug.Log("Overlays: " + overlays.Count);
-            currentWords.Add(temp[i]);
+
+            if (currentWords.Count == i)
+            {
+                currentWords.Add(temp[i]);
+                overlays[i].text = "";
+                textBoxes[i].text = temp[i];
+            }
+
             // Add padding so everything is centered even though the boxes are aligned left
             // overlays[i].text = "".PadRight(padding - temp[i].Length);
             // textBoxes[i].text = temp[i].PadRight(padding);
-            overlays[i].text = "";
-            textBoxes[i].text = temp[i];
         }
 
         // set all other boxes to inactive
@@ -392,6 +417,11 @@ public class Player : MonoBehaviour
             overlays[i].text = "";
         }
         MakeActive(currentMenu);
+    }
+
+    public void ClearOverlays()
+    {
+
     }
 
     // Pinged by the attack manager.  Updates fields appropriately
