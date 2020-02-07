@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     // reference to the attack manager
     public AttackManager am;
     // String array of words
-    private string[] words = { "attack", "defend", "item", "run"};
+    private string[] words = { "attack", "item", "run"};
     // Holds the current word to type
     private string currentWord;
     // Holds the current char to be typed (stored in a string to make comparison easier in future)
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         subMenus = new Dictionary<string, string[]>();
         specialToKey = new Dictionary<string, string>();
         PopulateDictionary();
-        subMenus.Add("default", new string[] { "attack", "defend", "special", "target" });
+        subMenus.Add("default", new string[] { "attack", "special", "target" });
         subMenus.Add("attack", new string[] { "keytar-smash", "violince", "flute-by-the-foot", "harm-onica", "bam-jo", "back" });
         subMenus.Add("special", new string[] {"vibrato-check", "ensnare-drum",  "keytar-solo", "back"});
         subMenus.Add("target", new string[] {enemyManager.enemies[0].name, enemyManager.enemies[1].name, enemyManager.enemies[2].name, "back" });
@@ -345,6 +345,7 @@ public class Player : MonoBehaviour
         indices.Clear();
         validIndices.Clear();
         string[] temp = subMenus[key];
+        int amount = temp.Length;
         List<string> toAdd = new List<string>(temp);
         toAdd.Remove("back");
         Debug.Log(toAdd.Count);
@@ -366,8 +367,9 @@ public class Player : MonoBehaviour
             currentWords.Add("back");
         }
 
+        if (amount > 4) amount = 4;
         // iterate through the options
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < amount; i++)
         {
             validIndices.Add(i);
             empties[i].SetActive(true);
