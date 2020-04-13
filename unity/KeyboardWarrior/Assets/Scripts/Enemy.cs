@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
     public Text attackBox;
 
 
-    private void Start()
+    public void Start()
     {
         maxHealth = 50;
         // Set the enemy's max health to it's given health
@@ -65,6 +65,11 @@ public class Enemy : MonoBehaviour
 
     public bool IsDead()
     {
-        return health<=0;
+        return health <= 0;
+    }
+
+    public virtual void Attack()
+    {
+        Debug.Log("This shouldn't call");
     }
 }

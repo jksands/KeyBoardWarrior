@@ -34,31 +34,31 @@ public class AttackManager : MonoBehaviour
         timer += (Time.deltaTime * attackSpeedMod) ;
         int temp = em.enemies.Count;
         // If there are more enemies, attacks happen faster
-        if (timer > timePool / temp)
-        {
-            sheepToggle = Random.Range(0, em.viableEnemies.Count);
-            sheepPos = em.viableEnemies[sheepToggle].transform.position;
-            sheepPos.y += 4;
-            attacks.Add(Instantiate(attack, sheepPos, Quaternion.identity, canvas.transform));
-            p1.WasAttacked(attacks[attacks.Count - 1]);
-            // Choose a random sheep to attack
+        //if (timer > timePool / temp)
+        //{
+        //    sheepToggle = Random.Range(0, em.viableEnemies.Count);
+        //    sheepPos = em.viableEnemies[sheepToggle].transform.position;
+        //    sheepPos.y += 4;
+        //    attacks.Add(Instantiate(attack, sheepPos, Quaternion.identity, canvas.transform));
+        //    p1.WasAttacked(attacks[attacks.Count - 1]);
+        //    // Choose a random sheep to attack
             
-            timer = 0;
-        }
-        for (int i = 0; i < attacks.Count; i++)
-        {
-            pos = attacks[i].transform.position;
-            pos.x -= 1 * Time.deltaTime;
-            attacks[i].transform.position = pos;
-            if (attacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
-            {
-                // Make the player take ONE WHOLE DAMAGE!
-                p1.TakeDamage(1);
-                Destroy(attacks[i]);
-                attacks.RemoveAt(i);
-                i--;
-            }
-        }
+        //    timer = 0;
+        //}
+        //for (int i = 0; i < attacks.Count; i++)
+        //{
+        //    pos = attacks[i].transform.position;
+        //    pos.x -= 1 * Time.deltaTime;
+        //    attacks[i].transform.position = pos;
+        //    if (attacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
+        //    {
+        //        // Make the player take ONE WHOLE DAMAGE!
+        //        p1.TakeDamage(1);
+        //        Destroy(attacks[i]);
+        //        attacks.RemoveAt(i);
+        //        i--;
+        //    }
+        //}
         //foreach(GameObject a in attacks)
         //{
         //    pos = a.transform.position;

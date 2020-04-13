@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    // Reference to the turn manager
+    public TurnManager tm;
     // reference to the attack manager
     public AttackManager am;
     // Reference to the awesome Manager
@@ -90,10 +92,13 @@ public class Player : MonoBehaviour
     // Script variable for how many words are active right now
     private int amount;
 
+    public static bool playerTurn;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        playerTurn = true;
         healthBox.color = Color.green;
         healthBox.text = health + "/" + maxHealth + " HP";
         // init stack
@@ -155,47 +160,50 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (counting)
-        {
-            counter += Time.deltaTime;
-            if (counter > delay)
-            {
-                canType = true;
-                counter = 0;
-                counting = false;
-                RemoveWrong();
-            }
-        }
-        if (startedTyping && currentMenu == "attack")
-        {
-            speed += Time.deltaTime;
-        }
         // Quit this shit
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(0);
             // SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
         }
-        if (canType)
+        if (playerTurn)
         {
-            // Optimization.  Only loops if there is a key down!
-            if (Input.anyKeyDown)
+            if (counting)
             {
-                CheckAttacks();
-                if (!attackRemoved)
+                counter += Time.deltaTime;
+                if (counter > delay)
                 {
-                    PlayerType();
-                } 
-                else
+                    canType = true;
+                    counter = 0;
+                    counting = false;
+                    RemoveWrong();
+                }
+            }
+            if (startedTyping && currentMenu == "attack")
+            {
+                speed += Time.deltaTime;
+            }
+            if (canType)
+            {
+                // Optimization.  Only loops if there is a key down!
+                if (Input.anyKeyDown)
                 {
-                    // MakeActive(currentMenu);
-                    ClearOverlays();
-                    attackRemoved = false;
+                    CheckAttacks();
+                    if (!attackRemoved)
+                    {
+                        PlayerType();
+                    }
+                    else
+                    {
+                        // MakeActive(currentMenu);
+                        ClearOverlays();
+                        attackRemoved = false;
+                    }
+
                 }
 
+
             }
-
-
         }
 
         // Debug.Log(active.Count);
@@ -314,6 +322,8 @@ public class Player : MonoBehaviour
                         enemyManager.DamageTarget(dmg);
                         speed = 0;
                         MakeActive(currentMenu = "default");
+                        tm.ChangeTurn();
+                        
                     }
                     else if (currentMenu == "special") //Special menu, so activate some special effect
                     {
@@ -335,6 +345,7 @@ public class Player : MonoBehaviour
                         }
                         
                         MakeActive(currentMenu = "default");
+                        tm.ChangeTurn();
                         speed = 0;
                     }
                     else

@@ -165,6 +165,7 @@ GameObject:
   - component: {fileID: 5157958616440491314}
   - component: {fileID: 4081043306466527337}
   - component: {fileID: 1177129999}
+  - component: {fileID: 5955411214648897289}
   m_Layer: 0
   m_Name: sheep
   m_TagString: Untagged
@@ -254,3 +255,22 @@ MonoBehaviour:
   health: 0
   nameBox: {fileID: 2097078597}
   healthBox: {fileID: 103177121}
+  attackBox: {fileID: 0}
+--- !u!114 &5955411214648897289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239844801174875266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56141f4e51d8434eb85f4318765aba6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: sheeple
+  maxHealth: 100
+  health: 0
+  nameBox: {fileID: 0}
+  healthBox: {fileID: 0}
+  attackBox: {fileID: 0}
