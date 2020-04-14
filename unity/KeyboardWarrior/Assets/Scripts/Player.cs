@@ -205,6 +205,10 @@ public class Player : MonoBehaviour
 
             }
         }
+        else
+        {
+            // Defen against active attacks if there are any.
+        }
 
         // Debug.Log(active.Count);
         // // User fucked up typing all words
@@ -385,6 +389,10 @@ public class Player : MonoBehaviour
             }
 
         }
+    }
+    public void DefenseType()
+    {
+
     }
     public void MakeActive(string key)
     {

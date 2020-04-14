@@ -31,8 +31,8 @@ public class AttackManager : MonoBehaviour
     void Update()
     {
         // p1.WasAttacked(bard);
-        timer += (Time.deltaTime * attackSpeedMod) ;
-        int temp = em.enemies.Count;
+        //timer += (Time.deltaTime * attackSpeedMod) ;
+        //int temp = em.enemies.Count;
         // If there are more enemies, attacks happen faster
         //if (timer > timePool / temp)
         //{
@@ -71,5 +71,10 @@ public class AttackManager : MonoBehaviour
     {
         attacks.Remove(attack);
         Destroy(attack);
+    }
+
+    public void SheepAttack(string word)
+    {
+
     }
 }
