@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class AttackManager : MonoBehaviour
 {
+    // Static list of enemy attackboxes
+    public static List<GameObject> enemyAttacks;
+    public static bool enemyAttacking;
     public SpriteRenderer bSprite;
     public GameObject bard;     // Holds the player
     private Player p1;          // Holds reference to player's player script
@@ -21,6 +24,8 @@ public class AttackManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        enemyAttacks = new List<GameObject>();
+        enemyAttacking = false;
         p1 = bard.GetComponent<Player>();
         timePool = 7;
         attacks = new List<GameObject>();
@@ -30,6 +35,7 @@ public class AttackManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         // p1.WasAttacked(bard);
         //timer += (Time.deltaTime * attackSpeedMod) ;
         //int temp = em.enemies.Count;
@@ -42,29 +48,32 @@ public class AttackManager : MonoBehaviour
         //    attacks.Add(Instantiate(attack, sheepPos, Quaternion.identity, canvas.transform));
         //    p1.WasAttacked(attacks[attacks.Count - 1]);
         //    // Choose a random sheep to attack
-            
+
         //    timer = 0;
         //}
-        //for (int i = 0; i < attacks.Count; i++)
-        //{
-        //    pos = attacks[i].transform.position;
-        //    pos.x -= 1 * Time.deltaTime;
-        //    attacks[i].transform.position = pos;
-        //    if (attacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
-        //    {
-        //        // Make the player take ONE WHOLE DAMAGE!
-        //        p1.TakeDamage(1);
-        //        Destroy(attacks[i]);
-        //        attacks.RemoveAt(i);
-        //        i--;
-        //    }
-        //}
-        //foreach(GameObject a in attacks)
-        //{
-        //    pos = a.transform.position;
-        //    pos.x -= 1 * Time.deltaTime;
-        //    a.transform.position = pos;
-        //}
+        if (AttackManager.enemyAttacking)
+        {
+            for (int i = 0; i < AttackManager.enemyAttacks.Count; i++)
+            {
+                pos = AttackManager.enemyAttacks[i].transform.position;
+                pos.x -= 1 * Time.deltaTime;
+                AttackManager.enemyAttacks[i].transform.position = pos;
+                if (AttackManager.enemyAttacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
+                {
+                    // Make the player take ONE WHOLE DAMAGE!
+                    p1.TakeDamage(1);
+                    enemyAttacks[i].SetActive(false);
+                    AttackManager.enemyAttacks.RemoveAt(i);
+                    i--;
+                }
+            }
+            foreach (GameObject a in enemyAttacks)
+            {
+                pos = a.transform.position;
+                pos.x -= 1 * Time.deltaTime;
+                a.transform.position = pos;
+            }
+        }
     }
 
     public void RemoveAttack(GameObject attack)

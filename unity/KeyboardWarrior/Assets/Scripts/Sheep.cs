@@ -13,6 +13,7 @@ public class Sheep : Enemy
     public Canvas canvas;
     public GameObject textBox;
     private GameObject visibleBox;
+    private Vector3 boxPos;
     public Text wordText;
     public Text overlay;
     
@@ -23,6 +24,7 @@ public class Sheep : Enemy
         sheepAttacking = false;
         visibleBox = Instantiate(textBox, transform.position, Quaternion.identity, canvas.transform);
         visibleBox.SetActive(false);
+        boxPos = visibleBox.transform.position;
         Debug.Log("Start");
 
     }
@@ -35,11 +37,15 @@ public class Sheep : Enemy
             timer += Time.deltaTime;
             if (sheepAttacking)
             {
-                if (timer > 2)
+                if (AttackManager.enemyAttacks.Count == 0)
                 {
                     sheepAttacking = false;
                     timer = 0;
                     tm.ChangeTurn();
+                    visibleBox.SetActive(false);
+                    AttackManager.enemyAttacking = false;
+                    AttackManager.enemyAttacks.Clear();
+                    visibleBox.transform.position = boxPos;
                 }
                 else
                 {
@@ -53,12 +59,14 @@ public class Sheep : Enemy
     {
         Debug.Log("Sheep Attacking");
         sheepAttacking = true;
+        AttackManager.enemyAttacking = true;
         Debug.Log(gameObject.name);
         visibleBox.SetActive(true);
         Text[] temp = visibleBox.GetComponentsInChildren<Text>();
         wordText = temp[0];
-        wordText.text = "";
+        wordText.text = "ATTACKING";
         overlay = temp[1];
+        AttackManager.enemyAttacks.Add(visibleBox);
         
     }
 }
