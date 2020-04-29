@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class Sheep : Enemy
 {
-    // This has its own unique attack
-    bool sheepAttacking;
     float timer;
     public TurnManager tm;
     public AttackManager am;
@@ -24,7 +22,6 @@ public class Sheep : Enemy
     void Start()
     {
         base.Start();
-        sheepAttacking = false;
         // visibleBox.SetActive(false);
         // boxPos = visibleBox.transform.position;
         Debug.Log("Start");
@@ -32,47 +29,48 @@ public class Sheep : Enemy
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        // Would choose an attack here.  Sheep default to a group attack
-        if (sheepAttacking)
-        {
-            if (attackCount < 5)
-            {
-                timer += Time.deltaTime;
-                if (timer >= 2)
-                {
-                    timer = 0;
-                    // am.SheepAttack("baaaa");
-                }
-            }
-            // Max attacks have been spawned, so check if turn has ended
-            else
-            {
-                if (AttackManager.enemyAttacks.Count == 0)
-                {
-                    sheepAttacking = false;
-                    timer = 0;
-                    tm.ChangeTurn();
-                    visibleBox.SetActive(false);
-                    AttackManager.enemyAttacking = false;
-                    AttackManager.enemyAttacks.Clear();
-                    visibleBox.transform.position = boxPos;
-                }
-            }
+    //void Update()
+    //{
+    //    // Would choose an attack here.  Sheep default to a group attack
+    //    if (sheepAttacking)
+    //    {
+    //        if (attackCount < 5)
+    //        {
+    //            timer += Time.deltaTime;
+    //            if (timer >= 2)
+    //            {
+    //                timer = 0;
+    //                // am.SheepAttack("baaaa");
+    //            }
+    //        }
+    //        // Max attacks have been spawned, so check if turn has ended
+    //        else
+    //        {
+    //            if (AttackManager.enemyAttacks.Count == 0)
+    //            {
+    //                sheepAttacking = false;
+    //                timer = 0;
+    //                tm.ChangeTurn();
+    //                visibleBox.SetActive(false);
+    //                AttackManager.enemyAttacking = false;
+    //                AttackManager.enemyAttacks.Clear();
+    //                visibleBox.transform.position = boxPos;
+    //            }
+    //        }
 
-        }
-    }
+    //    }
+    //}
 
     public override void Attack()
     {
         Debug.Log("Sheep Attacking");
-        sheepAttacking = true;
+        // sheepAttacking = true;
         AttackManager.enemyAttacking = true;
         visibleBox = Instantiate(textBox, transform.position, Quaternion.identity, canvas.transform);
         Text[] temp = visibleBox.GetComponentsInChildren<Text>();
         wordText = temp[0];
         wordText.text = "BAAAA";
+        wordText.color = Color.red;
         overlay = temp[1];
         AttackManager.enemyAttacks.Add(visibleBox);
         

@@ -188,7 +188,7 @@ public class Player : MonoBehaviour
                 // Optimization.  Only loops if there is a key down!
                 if (Input.anyKeyDown)
                 {
-                    CheckAttacks();
+                    // CheckAttacks();
                     if (!attackRemoved)
                     {
                         PlayerType();
@@ -208,6 +208,8 @@ public class Player : MonoBehaviour
         else
         {
             // Defen against active attacks if there are any.
+
+            CheckAttacks();
         }
 
         // Debug.Log(active.Count);
@@ -223,37 +225,47 @@ public class Player : MonoBehaviour
     }
     public void CheckAttacks()
     {
-        // Check attacks FIRST
-        for (int i = 0; i < attacks.Count; i++)
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-            {
-                // If this is a special character, 
-                if (specialToKey.ContainsKey(attackWords[i]))
-                {
-                    // check if the user has pressed it
-                    if (Input.GetKeyDown(specialToKey[attackWords[i]]))
-                    {
-                        // If they have remove the attack
-                        attackRemoved = true;
-                        RemoveAttack(i);
-                        // Reset the overlays/ what the player has typed
-                        ClearOverlays();
-                        i--;
-                        break;
+            Debug.Log("Cycling attackS");
 
-                    }
-                }
-            }
-            // if user typed one of the defensible chars (and shift is not held)
-            else if (Input.GetKeyDown(attackWords[i]))
-            {
-                attackRemoved = true;
-                RemoveAttack(i);
-                i--;
-                break;
-            }
+            am.ChangeActiveAttack(am.activeIndex + 1);
         }
+        for (int i = 0; i < AttackManager.enemyAttacks.Count; i++)
+        {
+            
+        }
+        // Check attacks FIRST OLD CODE
+        //for (int i = 0; i < attacks.Count; i++)
+        //{
+        //    if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        //    {
+        //        // If this is a special character, 
+        //        if (specialToKey.ContainsKey(attackWords[i]))
+        //        {
+        //            // check if the user has pressed it
+        //            if (Input.GetKeyDown(specialToKey[attackWords[i]]))
+        //            {
+        //                // If they have remove the attack
+        //                attackRemoved = true;
+        //                RemoveAttack(i);
+        //                // Reset the overlays/ what the player has typed
+        //                ClearOverlays();
+        //                i--;
+        //                break;
+
+        //            }
+        //        }
+        //    }
+        //    // if user typed one of the defensible chars (and shift is not held)
+        //    else if (Input.GetKeyDown(attackWords[i]))
+        //    {
+        //        attackRemoved = true;
+        //        RemoveAttack(i);
+        //        i--;
+        //        break;
+        //    }
+        //}
     }
     public void PlayerType()
     {

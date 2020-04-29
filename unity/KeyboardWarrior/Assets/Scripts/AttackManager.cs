@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AttackManager : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class AttackManager : MonoBehaviour
     public bool sheepAttacking;
     public List<Sheep> sheeple;
     private int attackCount;
+
+    public GameObject activeAttack;
+    public int activeIndex;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +38,7 @@ public class AttackManager : MonoBehaviour
         p1 = bard.GetComponent<Player>();
         timePool = 7;
         attacks = new List<GameObject>();
+        activeIndex = 0;
         // p1.WasAttacked(em.enemies[0].gameObject);
     }
 
@@ -88,6 +93,32 @@ public class AttackManager : MonoBehaviour
         }
     }
 
+    public void ChangeActiveAttack(int index)
+    {
+        // If there are no attacks to change to; do nothing
+        if (enemyAttacks.Count < 2) return;
+
+        Text[] temp;
+        if (activeAttack != null)
+        {
+            temp = activeAttack.GetComponentsInChildren<Text>();
+            temp[0].color = Color.red;
+        }
+        activeAttack = enemyAttacks[index %= enemyAttacks.Count];
+        temp = activeAttack.GetComponentsInChildren<Text>();
+        temp[0].color = Color.white;
+        activeIndex = index;
+
+    }
+
+    public void SetActiveAttack(int index)
+    {
+        Text[] temp;
+        activeAttack = enemyAttacks[index %= enemyAttacks.Count];
+        temp = activeAttack.GetComponentsInChildren<Text>();
+        temp[0].color = Color.white;
+        activeIndex = index;
+    }
     public void RemoveAttack(GameObject attack)
     {
         attacks.Remove(attack);
@@ -105,6 +136,10 @@ public class AttackManager : MonoBehaviour
                 timer = 0;
                 attackCount++;
                 sheeple[Random.Range(0, sheeple.Count)].Attack();
+                if (attackCount == 1)
+                {
+                    SetActiveAttack(0);
+                }
             }
         }
         // Max attacks have been spawned, so check if turn has ended
@@ -114,6 +149,8 @@ public class AttackManager : MonoBehaviour
             {
                 Debug.Log("TURN ENDING");
                 attackCount = 0;
+                activeAttack = null;
+                activeIndex = 0;
                 sheepAttacking = false;
                 timer = 0;
                 enemyAttacking = false;
