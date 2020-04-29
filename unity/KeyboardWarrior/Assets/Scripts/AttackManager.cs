@@ -11,6 +11,7 @@ public class AttackManager : MonoBehaviour
     public GameObject bard;     // Holds the player
     private Player p1;          // Holds reference to player's player script
     public EnemyManager em;     // Enemy manager
+    public TurnManager tm;      // Turn Manager
     public GameObject attack;
     public Canvas canvas;
     private List<GameObject> attacks;
@@ -21,6 +22,10 @@ public class AttackManager : MonoBehaviour
     private int sheepToggle = 0;
     Vector3 sheepPos;
     Vector3 pos;
+
+    public bool sheepAttacking;
+    public List<Sheep> sheeple;
+    private int attackCount;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,7 +67,8 @@ public class AttackManager : MonoBehaviour
                 {
                     // Make the player take ONE WHOLE DAMAGE!
                     p1.TakeDamage(1);
-                    enemyAttacks[i].SetActive(false);
+                    // enemyAttacks[i].SetActive(false);
+                    Destroy(enemyAttacks[i]);
                     AttackManager.enemyAttacks.RemoveAt(i);
                     i--;
                 }
@@ -74,6 +80,12 @@ public class AttackManager : MonoBehaviour
                 a.transform.position = pos;
             }
         }
+
+        // Unique code for sheep attacking
+        if (sheepAttacking)
+        {
+            SheepAttack();
+        }
     }
 
     public void RemoveAttack(GameObject attack)
@@ -82,8 +94,33 @@ public class AttackManager : MonoBehaviour
         Destroy(attack);
     }
 
-    public void SheepAttack(string word)
+    // Triggers the sheep attack.
+    public void SheepAttack()
     {
+        if (attackCount < sheeple.Count * 2 - 1)
+        {
+            timer += Time.deltaTime;
+            if (timer >= 1)
+            {
+                timer = 0;
+                attackCount++;
+                sheeple[Random.Range(0, sheeple.Count)].Attack();
+            }
+        }
+        // Max attacks have been spawned, so check if turn has ended
+        else
+        {
+            if (enemyAttacks.Count == 0)
+            {
+                Debug.Log("TURN ENDING");
+                attackCount = 0;
+                sheepAttacking = false;
+                timer = 0;
+                enemyAttacking = false;
+                enemyAttacks.Clear();
+                tm.ChangeTurn();
+            }
+        }
 
     }
 }

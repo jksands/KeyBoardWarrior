@@ -10,12 +10,17 @@ public class EnemyManager : MonoBehaviour
     // Used when picking a random enemy
     public List<Enemy> viableEnemies;
 
+    public AttackManager am;
+
+
     public Enemy currentTarget;
 
     public GameObject cursor;
 
     // Here incase we ever want to hide the enemies' names
     public bool showNames = true;
+
+    private int attackCount;
 
     private void Start()
     {
@@ -25,6 +30,7 @@ public class EnemyManager : MonoBehaviour
         foreach (Enemy e in enemies)
             viableEnemies.Add(e);
     }
+
 
     public void ToggleEnemyNames()
     {
@@ -91,6 +97,28 @@ public class EnemyManager : MonoBehaviour
         {
 
             SceneManager.LoadScene(4);
+        }
+    }
+
+    public void CalculateEnemyTurn()
+    {
+        Enemy attacker;
+        attacker = viableEnemies[Random.Range(0, viableEnemies.Count)];
+        if (attacker is Sheep)
+        {
+            Debug.Log("sheep?");
+            List<Sheep> sheeple = new List<Sheep>();
+            // loop through and count how many sheep there are.
+            foreach (Enemy e in viableEnemies)
+            {
+                if (e is Sheep)
+                {
+                    sheeple.Add((Sheep)e);
+                }
+            }
+            am.sheeple = sheeple;
+            am.sheepAttacking = true;
+
         }
     }
 }

@@ -24,18 +24,8 @@ public class TurnManager : MonoBehaviour
         Debug.Log("Switching Turns");
         Player.playerTurn = !Player.playerTurn;
         Debug.Log("It is my turn: " + Player.playerTurn);
-        if (!Player.playerTurn) CalculateEnemyTurn();
+        if (!Player.playerTurn) em.CalculateEnemyTurn();
     }
     
-    private void CalculateEnemyTurn()
-    {
-        Enemy attacker;
-        attacker = em.viableEnemies[Random.Range(0, em.viableEnemies.Count)];
-        if (attacker is Sheep)
-        {
-            Debug.Log("sheep?");
-            ((Sheep)attacker).Attack();
-
-        }
-    }
+    
 }

@@ -16,15 +16,17 @@ public class Sheep : Enemy
     private Vector3 boxPos;
     public Text wordText;
     public Text overlay;
+
+    // How many attacks have occurred.
+    private int attackCount;
     
     // Start is called before the first frame update
     void Start()
     {
         base.Start();
         sheepAttacking = false;
-        visibleBox = Instantiate(textBox, transform.position, Quaternion.identity, canvas.transform);
-        visibleBox.SetActive(false);
-        boxPos = visibleBox.transform.position;
+        // visibleBox.SetActive(false);
+        // boxPos = visibleBox.transform.position;
         Debug.Log("Start");
 
     }
@@ -32,10 +34,20 @@ public class Sheep : Enemy
     // Update is called once per frame
     void Update()
     {
+        // Would choose an attack here.  Sheep default to a group attack
         if (sheepAttacking)
         {
-            timer += Time.deltaTime;
-            if (sheepAttacking)
+            if (attackCount < 5)
+            {
+                timer += Time.deltaTime;
+                if (timer >= 2)
+                {
+                    timer = 0;
+                    // am.SheepAttack("baaaa");
+                }
+            }
+            // Max attacks have been spawned, so check if turn has ended
+            else
             {
                 if (AttackManager.enemyAttacks.Count == 0)
                 {
@@ -47,11 +59,8 @@ public class Sheep : Enemy
                     AttackManager.enemyAttacks.Clear();
                     visibleBox.transform.position = boxPos;
                 }
-                else
-                {
-                    am.SheepAttack("baaaa");
-                }
             }
+
         }
     }
 
@@ -60,11 +69,10 @@ public class Sheep : Enemy
         Debug.Log("Sheep Attacking");
         sheepAttacking = true;
         AttackManager.enemyAttacking = true;
-        Debug.Log(gameObject.name);
-        visibleBox.SetActive(true);
+        visibleBox = Instantiate(textBox, transform.position, Quaternion.identity, canvas.transform);
         Text[] temp = visibleBox.GetComponentsInChildren<Text>();
         wordText = temp[0];
-        wordText.text = "ATTACKING";
+        wordText.text = "BAAAA";
         overlay = temp[1];
         AttackManager.enemyAttacks.Add(visibleBox);
         
