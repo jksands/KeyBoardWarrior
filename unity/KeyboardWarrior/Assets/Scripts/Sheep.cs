@@ -69,7 +69,7 @@ public class Sheep : Enemy
         visibleBox = Instantiate(textBox, transform.position, Quaternion.identity, canvas.transform);
         Text[] temp = visibleBox.GetComponentsInChildren<Text>();
         wordText = temp[0];
-        wordText.text = "BAAAA";
+        wordText.text = "baaaaa";
         wordText.color = Color.red;
         overlay = temp[1];
         AttackManager.enemyAttacks.Add(visibleBox);

@@ -94,6 +94,8 @@ public class Player : MonoBehaviour
 
     public static bool playerTurn;
 
+    private int indexer = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -225,15 +227,25 @@ public class Player : MonoBehaviour
     }
     public void CheckAttacks()
     {
+        char temp;
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             Debug.Log("Cycling attackS");
 
             am.ChangeActiveAttack(am.activeIndex + 1);
         }
-        for (int i = 0; i < AttackManager.enemyAttacks.Count; i++)
+        if (am.activeAttack != null)
         {
-            
+            if (Input.GetKeyDown((temp = am.activeText.text[indexer]).ToString()))
+            {
+                am.activeOverlay.text += temp;
+                indexer++;
+                if (indexer == am.activeText.text.Length)
+                {
+                    indexer = 0;
+                    am.DestroyActive();
+                }
+            }
         }
         // Check attacks FIRST OLD CODE
         //for (int i = 0; i < attacks.Count; i++)

@@ -29,6 +29,8 @@ public class AttackManager : MonoBehaviour
     private int attackCount;
 
     public GameObject activeAttack;
+    public Text activeText;
+    public Text activeOverlay;
     public int activeIndex;
     // Start is called before the first frame update
     void Start()
@@ -73,8 +75,13 @@ public class AttackManager : MonoBehaviour
                     // Make the player take ONE WHOLE DAMAGE!
                     p1.TakeDamage(1);
                     // enemyAttacks[i].SetActive(false);
-                    Destroy(enemyAttacks[i]);
-                    AttackManager.enemyAttacks.RemoveAt(i);
+                    if (enemyAttacks[i] == activeAttack)
+                        DestroyActive();
+                    else
+                    {
+                        Destroy(enemyAttacks[i]);
+                        enemyAttacks.RemoveAt(i);
+                    }
                     i--;
                 }
             }
@@ -103,26 +110,40 @@ public class AttackManager : MonoBehaviour
         {
             temp = activeAttack.GetComponentsInChildren<Text>();
             temp[0].color = Color.red;
+            activeOverlay.text = "";
         }
         activeAttack = enemyAttacks[index %= enemyAttacks.Count];
         temp = activeAttack.GetComponentsInChildren<Text>();
         temp[0].color = Color.white;
+        activeText = temp[0];
+        activeOverlay = temp[1];
         activeIndex = index;
 
     }
 
     public void SetActiveAttack(int index)
     {
+        Debug.Log("Setting first boi 2");
         Text[] temp;
         activeAttack = enemyAttacks[index %= enemyAttacks.Count];
         temp = activeAttack.GetComponentsInChildren<Text>();
         temp[0].color = Color.white;
         activeIndex = index;
+        activeText = temp[0];
+        activeOverlay = temp[1];
     }
     public void RemoveAttack(GameObject attack)
     {
         attacks.Remove(attack);
         Destroy(attack);
+    }
+
+    public void DestroyActive()
+    {
+        Destroy(activeAttack);
+        enemyAttacks.Remove(activeAttack);
+        if (enemyAttacks.Count > 0)
+        SetActiveAttack(activeIndex % enemyAttacks.Count);
     }
 
     // Triggers the sheep attack.
@@ -136,8 +157,10 @@ public class AttackManager : MonoBehaviour
                 timer = 0;
                 attackCount++;
                 sheeple[Random.Range(0, sheeple.Count)].Attack();
-                if (attackCount == 1)
+                Debug.Log("Setting first boi 1");
+                if (enemyAttacks.Count == 1)
                 {
+                    Debug.Log("Setting first boi 1.5");
                     SetActiveAttack(0);
                 }
             }
