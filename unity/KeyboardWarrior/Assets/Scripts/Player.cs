@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    // Regerence to the canvas for instantiation.
+    public Canvas canvas;
     // Reference to the turn manager
     public TurnManager tm;
     // reference to the attack manager
@@ -96,6 +98,11 @@ public class Player : MonoBehaviour
 
     private int indexer = 0;
 
+    public List<GameObject> guage;
+
+    private int special;
+    private int bonus;
+
 
     // Start is called before the first frame update
     void Start()
@@ -140,7 +147,15 @@ public class Player : MonoBehaviour
         MakeActive(currentMenu);
         // canType = false;
 
-
+        for (int i = 0; i < guage.Count; i++)
+        {
+            // Populate the list with insantiated copies of themselves positioned correctly.
+            guage[i] = Instantiate(guage[i], transform.position, Quaternion.identity, canvas.transform);
+            guage[i].transform.position = transform.position;
+            guage[i].transform.rotation = transform.rotation;
+            guage[i].transform.localScale = transform.localScale;
+            guage[i].SetActive(false);
+        }
 
         // Not needed anymore?
         // wordIndex = 0;
@@ -347,7 +362,14 @@ public class Player : MonoBehaviour
                         int dmg = (int)(currentWords[index].Length - (speed * 2))*3;
                         if (dmg < 1) dmg = 1;
                         // Going simple, each attack does a different amount of damage. Not yet balanced for each word
-                        enemyManager.DamageTarget(dmg);
+                        enemyManager.DamageTarget(dmg); 
+                        // Calculate special bonus
+                        bonus = (int)(5.0f - speed);
+                        if (bonus > 0)
+                        {
+                            special += bonus;
+                            ChangeGuage(special);
+                        }
                         speed = 0;
                         MakeActive(currentMenu = "default");
                         tm.ChangeTurn();
@@ -405,6 +427,7 @@ public class Player : MonoBehaviour
                 {
                     // counter = 0;
                     // Display all words red to user
+                    
                     canType = false;
                     ActivateWrong();
                     counting = true;
@@ -414,9 +437,15 @@ public class Player : MonoBehaviour
 
         }
     }
-    public void DefenseType()
+    public void ChangeGuage(int index)
     {
-
+        if (index > guage.Count) index = guage.Count - 1;
+        foreach (GameObject g in guage)
+        {
+            g.SetActive(false);
+        }
+        Debug.Log("Guage is now: " + index);
+        guage[index].SetActive(true);
     }
     public void MakeActive(string key)
     {

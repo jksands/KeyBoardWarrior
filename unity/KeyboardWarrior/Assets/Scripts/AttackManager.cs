@@ -85,12 +85,12 @@ public class AttackManager : MonoBehaviour
                     i--;
                 }
             }
-            foreach (GameObject a in enemyAttacks)
-            {
-                pos = a.transform.position;
-                pos.x -= 1 * Time.deltaTime;
-                a.transform.position = pos;
-            }
+            //foreach (GameObject a in enemyAttacks)
+            //{
+            //    pos = a.transform.position;
+            //    pos.x -= 1 * Time.deltaTime;
+            //    a.transform.position = pos;
+            //}
         }
 
         // Unique code for sheep attacking

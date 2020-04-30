@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 384615355}
   - component: {fileID: 384615354}
   - component: {fileID: 384615353}
+  - component: {fileID: 384615357}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -336,6 +337,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!95 &384615357
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384615352}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a9fa8c7f88d31a54e857b2ee5dfbd993, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &511424233
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +550,10 @@ MonoBehaviour:
   attackSpeedMod: 1
   sheepAttacking: 0
   sheeple: []
+  activeAttack: {fileID: 0}
+  activeText: {fileID: 0}
+  activeOverlay: {fileID: 0}
+  activeIndex: 0
 --- !u!4 &708707947
 Transform:
   m_ObjectHideFlags: 0
@@ -1499,6 +1523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f973b8aa5d1e56c4f902fd4974682b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 384615355}
   tm: {fileID: 753357697}
   am: {fileID: 708707946}
   empties:
@@ -1515,6 +1540,30 @@ MonoBehaviour:
   attacks: []
   attackWords: []
   speed: 0
+  guage:
+  - {fileID: 6742577971103932169, guid: 45d2032d0da2fef4baa88396a6159e1b, type: 3}
+  - {fileID: 1435497763066214871, guid: ddad1eb02f89a4e4eaf245841d39b290, type: 3}
+  - {fileID: 447165199811794848, guid: f9327f422d4c9a04888904bd85d63164, type: 3}
+  - {fileID: 6974695249426316115, guid: 5972455578afc684785ca01f238023bc, type: 3}
+  - {fileID: 4951352727911385247, guid: 78ad40edfb8f3c940ad1b54fb51b8bb1, type: 3}
+  - {fileID: 3427234778915671339, guid: 697e8fc49277f3c4198b69ead60475d5, type: 3}
+  - {fileID: 5532877574655760602, guid: 8d5263a27924a1f4b8ee2ca86df94a13, type: 3}
+  - {fileID: 1425330514346326787, guid: 54675ab34823ace47b64a28a73c06489, type: 3}
+  - {fileID: 7431940436106307534, guid: c6b70a282c318714880f41b7bf31beb9, type: 3}
+  - {fileID: 1449350482412624520, guid: d770a13a108d3594fb248e41529dc71f, type: 3}
+  - {fileID: 4725565555409689593, guid: 717b63dafd0f06e4597a8584d1e7a9f9, type: 3}
+  - {fileID: 7098680154316186814, guid: e570239092470da43ac2c5caf4a3284b, type: 3}
+  - {fileID: 1908451835132743973, guid: 134f56791948c1a48ad5b075159bb73c, type: 3}
+  - {fileID: 5143120630601683550, guid: 5ab23b74dba6aa64e9c424d2199aa406, type: 3}
+  - {fileID: 5521955896876850480, guid: 78fa96897286b5c42b660998c12c77ac, type: 3}
+  - {fileID: 5293233287358751942, guid: be7f9caf55b27e64c96f0341ccc4956e, type: 3}
+  - {fileID: 9154205067319511702, guid: b6d4e8acce448854b9ab87dfe04bac04, type: 3}
+  - {fileID: 3029113033446666949, guid: d58e58799119e064dada66bd4d7dd9e5, type: 3}
+  - {fileID: 8687111662772448677, guid: 7dafc3d886bd97044b024b25c0db1ec2, type: 3}
+  - {fileID: 2761910200013211722, guid: c1de00357274d3b44a4929d4e2d23d08, type: 3}
+  - {fileID: 4256716318923605543, guid: bba8668ed307d7445902729c666ae02f, type: 3}
+  - {fileID: 6104756967067410481, guid: a6b6d34fa2ea90b49955d713c571dd86, type: 3}
+  - {fileID: 3390262855108382438, guid: 90859a8e90dd29b418af97b65de23d90, type: 3}
 --- !u!212 &2011282439 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 5072005585620715845, guid: 954d0a1703b53064dad8f6fab6b4e789,
