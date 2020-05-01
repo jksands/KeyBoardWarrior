@@ -100,13 +100,17 @@ public class Player : MonoBehaviour
 
     public List<GameObject> guage;
 
-    private int special;
+    public int special;
     private int bonus;
+    private bool canBonus;
+    private bool canSpecial = false;
+    Text specialOverlay;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        canBonus = true;
         playerTurn = true;
         healthBox.color = Color.green;
         healthBox.text = health + "/" + maxHealth + " HP";
@@ -143,8 +147,6 @@ public class Player : MonoBehaviour
             // active.Add(empties[i]);
             indices.Add(0);
         }
-        // Init the menu system
-        MakeActive(currentMenu);
         // canType = false;
 
         for (int i = 0; i < guage.Count; i++)
@@ -171,6 +173,8 @@ public class Player : MonoBehaviour
         {
             overlays[i].color = Color.yellow;
         }
+        // Init the menu system
+        MakeActive(currentMenu);
         attackRemoved = false;
     }
 
@@ -365,9 +369,10 @@ public class Player : MonoBehaviour
                         enemyManager.DamageTarget(dmg); 
                         // Calculate special bonus
                         bonus = (int)(5.0f - speed);
-                        if (bonus > 0)
+                        if (canBonus && bonus > 0)
                         {
                             special += bonus;
+                            if (special > 4) canSpecial = true;
                             ChangeGuage(special);
                         }
                         speed = 0;
@@ -395,6 +400,9 @@ public class Player : MonoBehaviour
                         }
                         
                         MakeActive(currentMenu = "default");
+                        special -= 5;
+                        if (special < 5) canSpecial = false;
+                        ChangeGuage(special);
                         tm.ChangeTurn();
                         speed = 0;
                     }
@@ -402,6 +410,7 @@ public class Player : MonoBehaviour
                     {
                         MakeActive(currentMenu = "default");
                     }
+                    canBonus = true;
                     // Break out of the for loop as the word was found
                     // And the list will be repopulated
                     break;
@@ -427,7 +436,8 @@ public class Player : MonoBehaviour
                 {
                     // counter = 0;
                     // Display all words red to user
-                    
+
+                    canBonus = false;
                     canType = false;
                     ActivateWrong();
                     counting = true;
@@ -449,17 +459,19 @@ public class Player : MonoBehaviour
     }
     public void MakeActive(string key)
     {
-        Debug.Log("???");
+        Debug.Log("!!!");
         globalIndex = 0;
         currentWords.Clear();
         // overlays.Clear();
         active.Clear();
         indices.Clear();
         validIndices.Clear();
+        if (overlays.Count < 4) overlays.Insert(1, specialOverlay);
         string[] temp = subMenus[key];
         amount = temp.Length;
         List<string> toAdd = new List<string>(temp);
         toAdd.Remove("back");
+        int wordsAdded = 0;
         if (currentMenu != "default" && currentMenu != "target")
         {
 
@@ -478,35 +490,45 @@ public class Player : MonoBehaviour
             currentWords.Add("back");
         }
 
-        if (amount > 4) amount = 4;
-        // iterate through the options
-        for (int i = 0; i < amount; i++)
-        {
-            validIndices.Add(i);
-            empties[i].SetActive(true);
-            indices.Add(0);
-            active.Add(empties[i]);
-            // overlays.Add(savedOverlays[i]);
-            // Debug.Log("Overlays: " + overlays.Count);
-
-            if (currentWords.Count == i)
-            {
-                currentWords.Add(temp[i]);
-                overlays[i].text = "";
-                textBoxes[i].text = temp[i];
-            }
-
-            // Add padding so everything is centered even though the boxes are aligned left
-            // overlays[i].text = "".PadRight(padding - temp[i].Length);
-            // textBoxes[i].text = temp[i].PadRight(padding);
-        }
-        Debug.Log("Valid indices: " + validIndices.Count);
         // set all other boxes to inactive
-        for (int i = temp.Length; i < empties.Length; i++)
+        for (int i = 0; i < empties.Length; i++)
         {
             empties[i].SetActive(false);
             // indices[i] = 0;
             overlays[i].text = "";
+            overlays[i].color = Color.yellow;
+            textBoxes[i].color = Color.white;
+            // overlays[i].color = Color.yellow;
+        }
+        if (amount > 4) amount = 4;
+        // iterate through the options
+        for (int i = 0; i < amount; i++)
+        {
+            if (currentMenu == "default" && i == 1 && !canSpecial)
+            {
+                Debug.Log("special: " + temp[i]);
+                specialOverlay = overlays[i];
+                overlays[i].color = Color.gray;
+                textBoxes[i].text = temp[i];
+                empties[i].SetActive(true);
+                textBoxes[i].color = Color.gray;
+                overlays.RemoveAt(i);
+                Debug.Log("This shouldn't run twice");
+                continue;
+            }
+            validIndices.Add(wordsAdded);
+            empties[i].SetActive(true);
+            indices.Add(0);
+            active.Add(empties[i]);
+            if (currentWords.Count == wordsAdded)
+            {
+                Debug.Log("^^^");
+                Debug.Log("???????");
+                currentWords.Add(temp[i]);
+                overlays[wordsAdded].text = "";
+                textBoxes[i].text = temp[i];
+            }
+            wordsAdded++;
         }
         canType = true;
     }
@@ -517,6 +539,7 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < active.Count; i++)
         {
+            // If we can't special, the special option is grayed out.
             overlays[i].color = Color.red;
             overlays[i].text = currentWords[i];
         }
@@ -528,8 +551,8 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < active.Count; i++)
         {
-            overlays[i].color = Color.yellow;
-            overlays[i].text = "";
+                overlays[i].color = Color.yellow;
+                overlays[i].text = "";
         }
         // MakeActive(currentMenu);
         ClearOverlays();
@@ -540,10 +563,14 @@ public class Player : MonoBehaviour
 
         indices.Clear();
         validIndices.Clear();
+        Debug.Log("???");
+        int temp = 0;
         // iterate through the options
         for (int i = 0; i < amount; i++)
         {
-            validIndices.Add(i);
+            if (!canSpecial && currentMenu == "default" && i == 1) continue;
+            validIndices.Add(temp);
+            temp++;
             indices.Add(0);
 
             overlays[i].text = "";
