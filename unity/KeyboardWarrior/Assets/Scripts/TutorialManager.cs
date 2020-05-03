@@ -66,7 +66,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(2);
         }
 
         if (displayIndex < dialog[dialogEntryIndex].Length)
@@ -137,7 +137,7 @@ public class TutorialManager : MonoBehaviour
         // Load the next dialog
         if (dialogEntryIndex + 1 == dialog.Count)
         {
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(2);
         }
         else
         {
