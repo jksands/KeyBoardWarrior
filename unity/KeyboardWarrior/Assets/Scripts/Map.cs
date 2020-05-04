@@ -9,7 +9,7 @@ public class Map : MonoBehaviour
     public int moveIndex;
 
     public static int progress = 1;
-    public int activeIndex;
+    public static int activeIndex;
 
     // Start is called before the first frame update
     void Start()

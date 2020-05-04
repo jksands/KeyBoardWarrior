@@ -95,8 +95,18 @@ public class EnemyManager : MonoBehaviour
         }
         if (viableEnemies.Count == 0)
         {
+            if (Map.activeIndex == 2)
+            {
+                // You win!
+                SceneManager.LoadScene(7);
+            }
+            else
+            {
+                // Load the map again and increase progress
+                Map.progress++;
+                SceneManager.LoadScene(2);
 
-            SceneManager.LoadScene(4);
+            }
         }
     }
 

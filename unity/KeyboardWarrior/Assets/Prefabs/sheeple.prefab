@@ -103,6 +103,10 @@ MonoBehaviour:
   attackBox: {fileID: 0}
   tm: {fileID: 0}
   am: {fileID: 0}
+  canvas: {fileID: 0}
+  textBox: {fileID: 0}
+  wordText: {fileID: 0}
+  overlay: {fileID: 0}
 --- !u!1 &3123735326682105631
 GameObject:
   m_ObjectHideFlags: 0
