@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     public string name = "bad-guy";
     public int maxHealth = 100;
     [SerializeField]
-    private int health;
+    protected int health;
 
     // The textbox for the enemy's name
     public Text nameBox;

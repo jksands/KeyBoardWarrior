@@ -130,5 +130,18 @@ public class EnemyManager : MonoBehaviour
             am.sheepAttacking = true;
 
         }
+        else if (attacker is Goat)
+        {
+            Debug.Log("GOAT");
+            List<Goat> goats = new List<Goat>();
+            // Loop and count goats
+            foreach (Enemy e in viableEnemies)
+            {
+                if (e is Goat)
+                {
+                    goats.Add((Goat)e);
+                }
+            }
+        }
     }
 }

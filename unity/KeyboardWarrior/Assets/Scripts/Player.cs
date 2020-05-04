@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
         subMenus.Add("default", new string[] { "attack", "special", "target" });
         subMenus.Add("attack", new string[] { "breakdance", "violince", "crash", "deathmetal", "bam-jo", "back" });
         subMenus.Add("special", new string[] {"vibrato-check", "ensnare-drum",  "keytar-solo", "back"});
-        subMenus.Add("target", new string[] {enemyManager.enemies[0].name, enemyManager.enemies[1].name, enemyManager.enemies[2].name, "back" });
+        subMenus.Add("target", new string[] {enemyManager.enemies[0].gameObject.name, enemyManager.enemies[1].gameObject.name, enemyManager.enemies[2].gameObject.name, "back" });
         // Single textboxes (not used anymore
         // textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         // overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
@@ -255,7 +255,20 @@ public class Player : MonoBehaviour
         }
         if (am.activeAttack != null)
         {
-            if (Input.GetKeyDown((temp = am.activeText.text[indexer]).ToString()))
+            if (am.activeText.text[indexer] == ' ')
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    am.activeOverlay.text += " ";
+                    indexer++;
+                    if (indexer == am.activeText.text.Length)
+                    {
+                        indexer = 0;
+                        am.DestroyActive();
+                    }
+                }
+            }
+            else if (Input.GetKeyDown((temp = am.activeText.text[indexer]).ToString()))
             {
                 am.activeOverlay.text += temp;
                 indexer++;
@@ -387,12 +400,12 @@ public class Player : MonoBehaviour
                             for (int e = 0; e < enemyManager.enemies.Count; e++)
                             {
                                 enemyManager.TargetEnemy(enemyManager.enemies[e]);
-                                enemyManager.DamageTarget(25);
+                                enemyManager.DamageTarget(15);
                             }
                         }
                         else if (currentWords[index] == "ensnare-drum")
                         {
-                            am.attackSpeedMod = 0.75f;
+                            am.attackSpeedMod = 1f;
                         }
                         else if (currentWords[index] == "keytar-solo")
                         {

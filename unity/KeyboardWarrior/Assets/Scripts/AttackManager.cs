@@ -19,7 +19,7 @@ public class AttackManager : MonoBehaviour
 
     public float timePool = 5;
     public float timer = 0;
-    public float attackSpeedMod = 1; //Multiplier for how fast attacks are coming out
+    public float attackSpeedMod = 1.5f; //Multiplier for how fast attacks are coming out
     private int sheepToggle = 0;
     Vector3 sheepPos;
     Vector3 pos;
@@ -32,6 +32,7 @@ public class AttackManager : MonoBehaviour
     public Text activeText;
     public Text activeOverlay;
     public int activeIndex;
+    public int lastSheep;
     // Start is called before the first frame update
     void Start()
     {
@@ -68,7 +69,7 @@ public class AttackManager : MonoBehaviour
             for (int i = 0; i < AttackManager.enemyAttacks.Count; i++)
             {
                 pos = AttackManager.enemyAttacks[i].transform.position;
-                pos.x -= 1 * Time.deltaTime;
+                pos.x -= attackSpeedMod * Time.deltaTime;
                 AttackManager.enemyAttacks[i].transform.position = pos;
                 if (AttackManager.enemyAttacks[i].transform.position.x < bSprite.bounds.extents.x + bSprite.bounds.center.x)
                 {
@@ -156,7 +157,10 @@ public class AttackManager : MonoBehaviour
             {
                 timer = 0;
                 attackCount++;
-                sheeple[Random.Range(0, sheeple.Count)].Attack();
+                int thisSheep = Random.Range(0, sheeple.Count);
+                if (thisSheep == lastSheep) { thisSheep++; thisSheep %= sheeple.Count; }
+                sheeple[thisSheep].Attack();
+                lastSheep = thisSheep;
                 Debug.Log("Setting first boi 1");
                 if (enemyAttacks.Count == 1)
                 {

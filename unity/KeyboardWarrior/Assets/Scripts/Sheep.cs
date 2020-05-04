@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class Sheep : Enemy
 {
-    float timer;
-    public TurnManager tm;
-    public AttackManager am;
+    // float timer;
+    // public TurnManager tm;
+    // public AttackManager am;
     public Canvas canvas;
     public GameObject textBox;
     private GameObject visibleBox;
@@ -15,8 +15,8 @@ public class Sheep : Enemy
     public Text wordText;
     public Text overlay;
 
-    // How many attacks have occurred.
-    private int attackCount;
+    public List<string> sheepWords;
+
     
     // Start is called before the first frame update
     void Start()
@@ -25,6 +25,17 @@ public class Sheep : Enemy
         // visibleBox.SetActive(false);
         // boxPos = visibleBox.transform.position;
         Debug.Log("Start");
+
+        sheepWords.Add("bleat up");
+        sheepWords.Add("steel wool");
+        sheepWords.Add("rollout");
+        sheepWords.Add("baaaaa");
+        sheepWords.Add("hot fuzz");
+        sheepWords.Add("wake up sheeple");
+        sheepWords.Add("old mcdonald");
+        sheepWords.Add("steep sheep");
+        sheepWords.Add("baaaaa");
+        sheepWords.Add("baaaaa");
 
     }
 
@@ -66,10 +77,13 @@ public class Sheep : Enemy
         Debug.Log("Sheep Attacking");
         // sheepAttacking = true;
         AttackManager.enemyAttacking = true;
-        visibleBox = Instantiate(textBox, transform.position, Quaternion.identity, canvas.transform);
+        Vector3 position = transform.position;
+        position.y -= 1;
+        position.x += 1;
+        visibleBox = Instantiate(textBox, position, Quaternion.identity, canvas.transform);
         Text[] temp = visibleBox.GetComponentsInChildren<Text>();
         wordText = temp[0];
-        wordText.text = "baaaaa";
+        wordText.text = sheepWords[Random.Range(0, sheepWords.Count - 1)];
         wordText.color = Color.red;
         overlay = temp[1];
         AttackManager.enemyAttacks.Add(visibleBox);
