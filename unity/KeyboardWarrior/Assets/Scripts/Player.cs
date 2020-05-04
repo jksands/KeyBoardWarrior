@@ -661,7 +661,7 @@ public class Player : MonoBehaviour
         healthBox.text = health + "/" + maxHealth + " HP";
         if (health <= 0)
         {
-            SceneManager.LoadScene(3);
+            SceneManager.LoadScene(6);
         }
     }
 

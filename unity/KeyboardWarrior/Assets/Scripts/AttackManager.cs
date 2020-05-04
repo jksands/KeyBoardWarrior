@@ -218,7 +218,7 @@ public class AttackManager : MonoBehaviour
                 attackCount++;
                 foreach (Goat g in goats)
                     g.Attack();
-                if (enemyAttacks.Count == 2)
+                if (enemyAttacks.Count <= 2)
                 {
                     Debug.Log("Setting first boi 1.5");
                     SetActiveAttack(0);
@@ -245,24 +245,55 @@ public class AttackManager : MonoBehaviour
 
     public void BossAttack()
     {
-        if (em.viableEnemies.Count > 1)
+        if (em.viableEnemies.Count >= 1)
         {
+            attackSpeedMod = 2;
             Debug.Log(em.viableEnemies.Count);
-            boss.Attack();
+            if (attackCount < 20)
+            {
+                timer += Time.deltaTime;
+                if (timer >= .2)
+                {
+                    timer = 0;
+                    attackCount++;
+                    boss.Attack(attackCount);
+                    if (enemyAttacks.Count == 1)
+                    {
+                        Debug.Log("Setting first boi 1.5");
+                        SetActiveAttack(0);
+                    }
+                }
+            }
+            // Max attacks have been spawned, so check if turn has ended
+            else
+            {
+                if (enemyAttacks.Count == 0)
+                {
+                    Debug.Log("TURN ENDING");
+                    attackCount = 0;
+                    activeAttack = null;
+                    activeIndex = 0;
+                    bossAttacking = false;
+                    timer = 0;
+                    enemyAttacking = false;
+                    enemyAttacks.Clear();
+                    tm.ChangeTurn();
+                }
+            }
         }
-        else
+        if (em.viableEnemies.Count == 1)
         {
             Debug.Log("Calling to Arms");
             boss.CallToArms();
-            Debug.Log("TURN ENDING");
-            attackCount = 0;
-            activeAttack = null;
-            activeIndex = 0;
-            goatAttacking = false;
-            timer = 0;
-            bossAttacking = false;
-            enemyAttacks.Clear();
-            tm.ChangeTurn();
+            //Debug.Log("TURN ENDING");
+            //attackCount = 0;
+            //activeAttack = null;
+            //activeIndex = 0;
+            //goatAttacking = false;
+            //timer = 0;
+            //bossAttacking = false;
+            //enemyAttacks.Clear();
+            //tm.ChangeTurn();
         }
     }
 }

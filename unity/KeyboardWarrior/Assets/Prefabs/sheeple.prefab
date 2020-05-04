@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2886144535457378365}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5, y: -193, z: 10}
   m_LocalScale: {x: 30, y: 30, z: 30}
   m_Children:
@@ -101,12 +101,11 @@ MonoBehaviour:
   nameBox: {fileID: 3123735327062195706}
   healthBox: {fileID: 3123735326682105630}
   attackBox: {fileID: 0}
-  tm: {fileID: 0}
-  am: {fileID: 0}
   canvas: {fileID: 0}
-  textBox: {fileID: 0}
+  textBox: {fileID: 3727481678539134442, guid: ae7da5abf43007d48b290ceb0dabd4f1, type: 3}
   wordText: {fileID: 0}
   overlay: {fileID: 0}
+  sheepWords: []
 --- !u!1 &3123735326682105631
 GameObject:
   m_ObjectHideFlags: 0
