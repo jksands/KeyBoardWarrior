@@ -39,6 +39,10 @@ public class AttackManager : MonoBehaviour
     public bool goatAttacking;
     public List<Goat> goats;
 
+    // Boss Stuff
+    public bool bossAttacking;
+    public Boss boss;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -109,6 +113,10 @@ public class AttackManager : MonoBehaviour
         if (goatAttacking)
         {
             GoatAttack();
+        }
+        if (bossAttacking)
+        {
+            BossAttack();
         }
     }
 
@@ -232,6 +240,29 @@ public class AttackManager : MonoBehaviour
                 enemyAttacks.Clear();
                 tm.ChangeTurn();
             }
+        }
+    }
+
+    public void BossAttack()
+    {
+        if (em.viableEnemies.Count > 1)
+        {
+            Debug.Log(em.viableEnemies.Count);
+            boss.Attack();
+        }
+        else
+        {
+            Debug.Log("Calling to Arms");
+            boss.CallToArms();
+            Debug.Log("TURN ENDING");
+            attackCount = 0;
+            activeAttack = null;
+            activeIndex = 0;
+            goatAttacking = false;
+            timer = 0;
+            bossAttacking = false;
+            enemyAttacks.Clear();
+            tm.ChangeTurn();
         }
     }
 }

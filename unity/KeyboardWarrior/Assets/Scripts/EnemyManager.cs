@@ -113,6 +113,7 @@ public class EnemyManager : MonoBehaviour
     public void CalculateEnemyTurn()
     {
         Enemy attacker;
+        Debug.Log("Enemy Count: " + viableEnemies.Count);
         attacker = viableEnemies[Random.Range(0, viableEnemies.Count)];
         if (attacker is Sheep)
         {
@@ -145,6 +146,12 @@ public class EnemyManager : MonoBehaviour
 
             am.goats = goats;
             am.goatAttacking = true;
+        }
+        else if (attacker is Boss)
+        {
+            Debug.Log("Boss");
+            am.bossAttacking = true;
+            am.boss = (Boss)attacker;
         }
     }
 }

@@ -123,7 +123,21 @@ public class Player : MonoBehaviour
         subMenus.Add("default", new string[] { "attack", "special", "target" });
         subMenus.Add("attack", new string[] { "breakdance", "violince", "crash", "deathmetal", "bam-jo", "back" });
         subMenus.Add("special", new string[] {"vibrato-check", "ensnare-drum",  "keytar-solo", "back"});
-        subMenus.Add("target", new string[] {enemyManager.enemies[0].gameObject.name, enemyManager.enemies[1].gameObject.name, enemyManager.enemies[2].gameObject.name, "back" });
+        if (enemyManager.enemies.Count == 1)
+        {
+
+            subMenus.Add("target", new string[] {enemyManager.enemies[0].gameObject.name, 
+            //enemyManager.enemies[1].gameObject.name, 
+            // enemyManager.enemies[2].gameObject.name, 
+            "back" });
+        }
+        else
+        {
+            subMenus.Add("target", new string[] {enemyManager.enemies[0].gameObject.name, 
+            enemyManager.enemies[1].gameObject.name, 
+            enemyManager.enemies[2].gameObject.name, 
+            "back" });
+        }
         // Single textboxes (not used anymore
         // textBox = empties[0].transform.GetChild(0).gameObject.GetComponent<Text>();
         // overlay = empties[0].transform.GetChild(1).gameObject.GetComponent<Text>();
@@ -178,6 +192,19 @@ public class Player : MonoBehaviour
         attackRemoved = false;
     }
 
+    public  void ResetMenu()
+    {
+
+        subMenus.Remove("target");
+        subMenus.Add("target", new string[] {enemyManager.viableEnemies[0].gameObject.name,
+            enemyManager.viableEnemies[1].gameObject.name,
+            enemyManager.viableEnemies[2].gameObject.name,
+            "back" });
+
+        Debug.Log(enemyManager.viableEnemies[1].gameObject.name);
+        Debug.Log(enemyManager.viableEnemies[2].gameObject.name);
+        Debug.Log("Reset Menu");
+    }
     // Update is called once per frame
     void Update()
     {
@@ -383,7 +410,7 @@ public class Player : MonoBehaviour
                     else if (currentMenu == "target")
                     {
                         // The selected enemy's index should match the index of the word in the array
-                        enemyManager.TargetEnemy(enemyManager.enemies[index]);
+                        enemyManager.TargetEnemy(enemyManager.viableEnemies[index]);
                         MakeActive(currentMenu = "default");
                     }
                     // We're in the attack menu, so attack the targeted enemy (or random enemy if no target)
