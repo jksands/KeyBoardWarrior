@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
     // When you type an attack, the word progress you currently have will be reset.
     private bool attackRemoved;
 
-    private string[] specialChars = { "!", "@", "#", "$", "%", "^", "&", "*", "z", "x", "q", "v", "/", "'", ";", "w", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+    private string[] specialChars = { "!", "@", "#", "$", "%", "^", "&", "*", "z", "x", "q", "v", "/", ";", "w", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
     private Dictionary<string, string> specialToKey;
     private int health = 10;
     private int maxHealth = 10;
@@ -255,7 +255,20 @@ public class Player : MonoBehaviour
         }
         if (am.activeAttack != null)
         {
-            if (am.activeText.text[indexer] == ' ')
+            if (specialToKey.ContainsKey(am.activeText.text[indexer].ToString()))
+            {
+                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                {
+                    // check if the user has pressed it
+                    if (Input.GetKeyDown(specialToKey[am.activeText.text[indexer].ToString()]))
+                    {
+                        indexer = 0;
+                        am.DestroyActive();
+
+                    }
+                }
+            }
+            else if (am.activeText.text[indexer] == ' ')
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {

@@ -24,15 +24,21 @@ public class AttackManager : MonoBehaviour
     Vector3 sheepPos;
     Vector3 pos;
 
+    // Sheep Stuff
     public bool sheepAttacking;
     public List<Sheep> sheeple;
     private int attackCount;
+    public int lastSheep;
 
     public GameObject activeAttack;
     public Text activeText;
     public Text activeOverlay;
     public int activeIndex;
-    public int lastSheep;
+
+    // Goat Stuff
+    public bool goatAttacking;
+    public List<Goat> goats;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -98,6 +104,11 @@ public class AttackManager : MonoBehaviour
         if (sheepAttacking)
         {
             SheepAttack();
+        }
+        // Unique code for goat attacking
+        if (goatAttacking)
+        {
+            GoatAttack();
         }
     }
 
@@ -186,5 +197,41 @@ public class AttackManager : MonoBehaviour
             }
         }
 
+    }
+
+    public void GoatAttack()
+    {
+        if (attackCount < 5)
+        {
+            timer += Time.deltaTime;
+            if (timer >= 1)
+            {
+                timer = 0;
+                attackCount++;
+                foreach (Goat g in goats)
+                    g.Attack();
+                if (enemyAttacks.Count == 2)
+                {
+                    Debug.Log("Setting first boi 1.5");
+                    SetActiveAttack(0);
+                }
+            }
+        }
+        // Max attacks have been spawned, so check if turn has ended
+        else
+        {
+            if (enemyAttacks.Count == 0)
+            {
+                Debug.Log("TURN ENDING");
+                attackCount = 0;
+                activeAttack = null;
+                activeIndex = 0;
+                goatAttacking = false;
+                timer = 0;
+                enemyAttacking = false;
+                enemyAttacks.Clear();
+                tm.ChangeTurn();
+            }
+        }
     }
 }

@@ -142,6 +142,9 @@ public class EnemyManager : MonoBehaviour
                     goats.Add((Goat)e);
                 }
             }
+
+            am.goats = goats;
+            am.goatAttacking = true;
         }
     }
 }
