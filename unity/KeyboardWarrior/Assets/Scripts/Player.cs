@@ -96,7 +96,7 @@ public class Player : MonoBehaviour
 
     public static bool playerTurn;
 
-    private int indexer = 0;
+    public int indexer = 0;
 
     public List<GameObject> guage;
 
@@ -163,11 +163,14 @@ public class Player : MonoBehaviour
         }
         // canType = false;
 
+        Vector3 p;
         for (int i = 0; i < guage.Count; i++)
         {
             // Populate the list with insantiated copies of themselves positioned correctly.
             guage[i] = Instantiate(guage[i], transform.position, Quaternion.identity, canvas.transform);
-            guage[i].transform.position = transform.position;
+            p = transform.position;
+            p.z -= 1;
+            guage[i].transform.position = p;
             guage[i].transform.rotation = transform.rotation;
             guage[i].transform.localScale = transform.localScale;
             guage[i].SetActive(false);
@@ -213,6 +216,22 @@ public class Player : MonoBehaviour
         {
             SceneManager.LoadScene(0);
             // SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+        }
+        // Next level Hacks
+        if (Input.GetKeyDown(KeyCode.KeypadPlus))
+        {
+            if (Map.activeIndex == 2)
+            {
+                // You win!
+                SceneManager.LoadScene(7);
+            }
+            else
+            {
+                // Load the map again and increase progress
+                Map.progress++;
+                SceneManager.LoadScene(2);
+
+            }
         }
         if (playerTurn)
         {
@@ -451,11 +470,11 @@ public class Player : MonoBehaviour
                         {
                             enemyManager.DamageTarget(35); //Just a prototyping value
                         }
-                        
-                        MakeActive(currentMenu = "default");
+
                         special -= 5;
                         if (special < 5) canSpecial = false;
                         ChangeGuage(special);
+                        MakeActive(currentMenu = "default");
                         tm.ChangeTurn();
                         speed = 0;
                     }

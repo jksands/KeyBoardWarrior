@@ -42,6 +42,7 @@ public class AttackManager : MonoBehaviour
     // Boss Stuff
     public bool bossAttacking;
     public Boss boss;
+    int maxAttacks = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -126,6 +127,7 @@ public class AttackManager : MonoBehaviour
         if (enemyAttacks.Count < 2) return;
 
         Text[] temp;
+        p1.indexer = 0;
         if (activeAttack != null)
         {
             temp = activeAttack.GetComponentsInChildren<Text>();
@@ -164,6 +166,8 @@ public class AttackManager : MonoBehaviour
         enemyAttacks.Remove(activeAttack);
         if (enemyAttacks.Count > 0)
         SetActiveAttack(activeIndex % enemyAttacks.Count);
+
+        p1.indexer = 0;
     }
 
     // Triggers the sheep attack.
@@ -245,11 +249,26 @@ public class AttackManager : MonoBehaviour
 
     public void BossAttack()
     {
+        if (em.viableEnemies.Count == 1)
+        {
+            Debug.Log("Calling to Arms");
+            boss.CallToArms();
+            maxAttacks = 10;
+            //Debug.Log("TURN ENDING");
+            //attackCount = 0;
+            //activeAttack = null;
+            //activeIndex = 0;
+            //goatAttacking = false;
+            //timer = 0;
+            //bossAttacking = false;
+            //enemyAttacks.Clear();
+            //tm.ChangeTurn();
+        }
         if (em.viableEnemies.Count >= 1)
         {
-            attackSpeedMod = 2;
+            attackSpeedMod = 1.75f;
             Debug.Log(em.viableEnemies.Count);
-            if (attackCount < 20)
+            if (attackCount < maxAttacks)
             {
                 timer += Time.deltaTime;
                 if (timer >= .2)
@@ -272,6 +291,8 @@ public class AttackManager : MonoBehaviour
                     Debug.Log("TURN ENDING");
                     attackCount = 0;
                     activeAttack = null;
+                    maxAttacks = 20;
+                    attackSpeedMod = 1.5f;
                     activeIndex = 0;
                     bossAttacking = false;
                     timer = 0;
@@ -280,20 +301,6 @@ public class AttackManager : MonoBehaviour
                     tm.ChangeTurn();
                 }
             }
-        }
-        if (em.viableEnemies.Count == 1)
-        {
-            Debug.Log("Calling to Arms");
-            boss.CallToArms();
-            //Debug.Log("TURN ENDING");
-            //attackCount = 0;
-            //activeAttack = null;
-            //activeIndex = 0;
-            //goatAttacking = false;
-            //timer = 0;
-            //bossAttacking = false;
-            //enemyAttacks.Clear();
-            //tm.ChangeTurn();
         }
     }
 }

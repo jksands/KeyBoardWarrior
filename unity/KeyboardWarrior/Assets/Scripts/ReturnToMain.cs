@@ -17,7 +17,7 @@ public class ReturnToMain : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             SceneManager.LoadScene(0);
-            Map.progress = 1;
+            //Map.progress = 1;
         }
     }
 }

@@ -27,7 +27,7 @@ public class Boss : Enemy
     // Start is called before the first frame update
     void Start()
     {
-        maxHealth = 300;
+        maxHealth = 200;
         // Set the enemy's max health to it's given health
         health = maxHealth;
 
